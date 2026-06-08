@@ -7,6 +7,7 @@ import { StatusBar } from "./statusbar";
 import { CommandMenu } from "./commands";
 import type { CommandType } from "./commands/type";
 import { useCommandMenu } from "./commands/useCommandMenu";
+import { useToast } from "../providers/toast";
 
 type InputBarProps = {
   onSubmit: (text: string) => void;
@@ -40,6 +41,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
   const textareaRef = useRef<TextareaRenderable>(null);
   const onSubmitRef = useRef<() => void>(() => {});
   const renderer = useRenderer();
+  const toast = useToast();
 
   const {
     showCommandMenu,
@@ -88,12 +90,13 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
       if (command.action) {
         command.action({
           exit: () => renderer.destroy(),
+          toast,
         });
       } else {
         txtarea.insertText(command.value + " ");
       }
     },
-    [renderer],
+    [renderer, toast],
   );
 
   useEffect(() => {
