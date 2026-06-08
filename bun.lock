@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "koda-arc",
+      "devDependencies": {
+        "@types/node": "^25.9.2",
+      },
     },
     "packages/cli": {
       "name": "@koda-arc/cli",
@@ -14,6 +17,7 @@
       },
       "devDependencies": {
         "@types/bun": "latest",
+        "@types/node": "^25.9.2",
         "@types/react": "^19.2.17",
       },
       "peerDependencies": {
