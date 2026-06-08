@@ -2,7 +2,7 @@ export type CommandContext = {
   exit: () => void;
 };
 
-export type Command = {
+export type CommandType = {
   name: string;
   desc: string;
   value: string;
