@@ -6,9 +6,16 @@ export const COMMANDS: CommandType[] = [
     desc: "Clear context and start a fresh conversation",
     value: "/new",
     action: (ctx) => {
-      ctx.toast.show({
-        variant: "info",
-        message: "Starting a new conversation...",
+      ctx.dialog.open({
+        title: "Start New Conversation",
+        children: (
+          <box flexDirection="column" gap={1}>
+            <text fg="#d0cfcc">
+              This will clear your current context and message history.
+            </text>
+            <text fg="#3f5466">This action cannot be undone.</text>
+          </box>
+        ),
       });
     },
   },
@@ -17,9 +24,19 @@ export const COMMANDS: CommandType[] = [
     desc: "Switch to a different KodaArc agent",
     value: "/agent",
     action: (ctx) => {
-      ctx.toast.show({
-        variant: "info",
-        message: "Opening agent selector...",
+      ctx.dialog.open({
+        title: "Select Agent",
+        children: (
+          <box flexDirection="column" gap={1}>
+            <text fg="#d0cfcc">Choose an agent for your session:</text>
+            <box flexDirection="column" gap={1} paddingTop={1}>
+              <text fg="#82E0AA">› Code General coding assistant</text>
+              <text fg="#d0cfcc"> Debug Root cause and fix errors</text>
+              <text fg="#d0cfcc"> Architect System design and planning</text>
+              <text fg="#d0cfcc"> Review Code review and feedback</text>
+            </box>
+          </box>
+        ),
       });
     },
   },
@@ -28,9 +45,21 @@ export const COMMANDS: CommandType[] = [
     desc: "Choose the LLM powering your session",
     value: "/models",
     action: (ctx) => {
-      ctx.toast.show({
-        variant: "info",
-        message: "Opening model selector...",
+      ctx.dialog.open({
+        title: "Select Model",
+        children: (
+          <box flexDirection="column" gap={1}>
+            <text fg="#d0cfcc">Choose the model for generation:</text>
+            <box flexDirection="column" gap={1} paddingTop={1}>
+              <text fg="#82E0AA">› claude-sonnet-4 Recommended</text>
+              <text fg="#d0cfcc"> claude-opus-4 Most capable</text>
+              <text fg="#d0cfcc"> claude-haiku-4 Fastest</text>
+            </box>
+            <text fg="#3f5466" paddingTop={1}>
+              Current model will apply to new messages only.
+            </text>
+          </box>
+        ),
       });
     },
   },
@@ -39,9 +68,21 @@ export const COMMANDS: CommandType[] = [
     desc: "View and restore past conversations",
     value: "/sessions",
     action: (ctx) => {
-      ctx.toast.show({
-        variant: "info",
-        message: "Loading past sessions...",
+      ctx.dialog.open({
+        title: "Past Sessions",
+        children: (
+          <box flexDirection="column" gap={1}>
+            <text fg="#d0cfcc">Your recent sessions:</text>
+            <box flexDirection="column" gap={1} paddingTop={1}>
+              <text fg="#56D6C2">› Today 14:32 Refactoring auth module</text>
+              <text fg="#d0cfcc"> Today 09:11 Fix pagination bug</text>
+              <text fg="#d0cfcc"> Yesterday Setup CI pipeline</text>
+            </box>
+            <text fg="#3f5466" paddingTop={1}>
+              Sessions are stored in ~/.kodaarc/sessions
+            </text>
+          </box>
+        ),
       });
     },
   },
@@ -50,9 +91,18 @@ export const COMMANDS: CommandType[] = [
     desc: "Customize the editor color theme",
     value: "/theme",
     action: (ctx) => {
-      ctx.toast.show({
-        variant: "info",
-        message: "Opening theme settings...",
+      ctx.dialog.open({
+        title: "Select Theme",
+        children: (
+          <box flexDirection="column" gap={1}>
+            <text fg="#d0cfcc">Choose a color theme:</text>
+            <box flexDirection="column" gap={1} paddingTop={1}>
+              <text fg="#82E0AA">› Arc Dark Default</text>
+              <text fg="#d0cfcc"> Arc Midnight High contrast</text>
+              <text fg="#d0cfcc"> Arc Soft Easy on eyes</text>
+            </box>
+          </box>
+        ),
       });
     },
   },
@@ -72,9 +122,16 @@ export const COMMANDS: CommandType[] = [
     desc: "Sign out of your KodaArc account",
     value: "/logout",
     action: (ctx) => {
-      ctx.toast.show({
-        variant: "warning",
-        message: "Signing out of KodaArc...",
+      ctx.dialog.open({
+        title: "Sign Out",
+        children: (
+          <box flexDirection="column" gap={1}>
+            <text fg="#d0cfcc">
+              Are you sure you want to sign out of KodaArc?
+            </text>
+            <text fg="#3f5466">Your local sessions will remain saved.</text>
+          </box>
+        ),
       });
     },
   },
@@ -105,12 +162,15 @@ export const COMMANDS: CommandType[] = [
     desc: "Quit KodaArc",
     value: "/exit",
     action: (ctx) => {
-      ctx.toast.show({
-        variant: "warning",
-        message: "Goodbye! See you next time.",
-        duration: 800,
+      ctx.dialog.open({
+        title: "Quit KodaArc",
+        children: (
+          <box flexDirection="column" gap={1}>
+            <text fg="#d0cfcc">Are you sure you want to exit?</text>
+            <text fg="#3f5466">Your current session will be saved.</text>
+          </box>
+        ),
       });
-      ctx.exit();
     },
   },
 ];

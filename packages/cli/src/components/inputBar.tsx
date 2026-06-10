@@ -8,6 +8,7 @@ import { CommandMenu } from "./commands";
 import type { CommandType } from "./commands/type";
 import { useCommandMenu } from "./commands/useCommandMenu";
 import { useToast } from "../providers/toast";
+import { useDialog } from "../providers/dialog";
 import { useKeyboardLayer } from "../providers/keyboardLayer";
 
 type InputBarProps = {
@@ -43,6 +44,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
   const onSubmitRef = useRef<() => void>(() => {});
   const renderer = useRenderer();
   const toast = useToast();
+  const dialog = useDialog();
   const { isTopLayer, setResponder } = useKeyboardLayer();
 
   const {
@@ -93,6 +95,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
         command.action({
           exit: () => renderer.destroy(),
           toast,
+          dialog,
         });
       } else {
         txtarea.insertText(command.value + " ");
