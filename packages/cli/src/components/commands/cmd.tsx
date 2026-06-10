@@ -1,3 +1,4 @@
+import { ThemeDialogContent } from "../../dialogs";
 import type { CommandType } from "./type";
 
 export const COMMANDS: CommandType[] = [
@@ -93,16 +94,7 @@ export const COMMANDS: CommandType[] = [
     action: (ctx) => {
       ctx.dialog.open({
         title: "Select Theme",
-        children: (
-          <box flexDirection="column" gap={1}>
-            <text fg="#d0cfcc">Choose a color theme:</text>
-            <box flexDirection="column" gap={1} paddingTop={1}>
-              <text fg="#82E0AA">› Arc Dark Default</text>
-              <text fg="#d0cfcc"> Arc Midnight High contrast</text>
-              <text fg="#d0cfcc"> Arc Soft Easy on eyes</text>
-            </box>
-          </box>
-        ),
+        children: <ThemeDialogContent />,
       });
     },
   },
