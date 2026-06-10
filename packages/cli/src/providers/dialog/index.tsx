@@ -100,25 +100,46 @@ function Dialog({ currentDialog, close }: DialogProps) {
       <box
         width={Math.min(60, width - 41)}
         height="auto"
-        backgroundColor={colors.dialogSurface}
-        paddingX={4}
-        paddingY={1}
-        flexDirection="column"
-        gap={1}
+        borderColor={colors.primary}
+        border={["top", "bottom", "left", "right"]}
+        customBorderChars={{
+          topLeft: "╭",
+          topRight: "╮",
+          bottomLeft: "╰",
+          bottomRight: "╯",
+          vertical: "│",
+          horizontal: "─",
+          topT: "",
+          bottomT: "",
+          leftT: "",
+          rightT: "",
+          cross: "",
+        }}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <box
-          paddingBottom={1}
-          flexDirection="row"
-          alignItems="center"
-          justifyContent="space-between"
+          width="100%"
+          backgroundColor={colors.dialogSurface}
+          paddingX={4}
+          paddingY={1}
+          flexDirection="column"
+          gap={1}
         >
-          <text attributes={TextAttributes.BOLD}>{title}</text>
-          <text attributes={TextAttributes.DIM} onMouseDown={() => close()}>
-            X
-          </text>
+          <box
+            paddingBottom={1}
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <text attributes={TextAttributes.BOLD} fg={colors.primary}>
+              {title}
+            </text>
+            <text attributes={TextAttributes.DIM} onMouseDown={() => close()}>
+              X
+            </text>
+          </box>
+          <box flexGrow={1}>{children}</box>
         </box>
-        <box flexGrow={1}>{children}</box>
       </box>
     </box>
   );
