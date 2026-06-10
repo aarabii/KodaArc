@@ -7,7 +7,7 @@ import type { ThemeProps } from "../theme";
 
 export const ThemeDialogContent = () => {
   const dialog = useDialog();
-  const { setTheme, currentTheme } = useTheme();
+  const { setTheme, currentTheme, colors } = useTheme();
   const originalThemeRef = useRef(currentTheme);
   const confirmRef = useRef(false);
 
@@ -41,14 +41,14 @@ export const ThemeDialogContent = () => {
       onSelect={handleSelect}
       onHighlight={handleHighlight}
       filterFn={(t, q) => t.name.toLowerCase().includes(q.toLowerCase())}
-      renderItem={(theme, isSelected) => {
-        <text selectable={false} fg={isSelected ? "black" : "white"}>
+      renderItem={(theme, isSelected) => (
+        <text selectable={false} fg={isSelected ? colors.primary : "white"}>
           {theme.name === originalThemeRef.current.name
             ? "\u0020\u2022\u0020"
             : "\u0020\u0020\u0020"}
           {theme.name}
-        </text>;
-      }}
+        </text>
+      )}
       getKey={(t) => t.name}
       placeholder="Search for the different color theme"
       emptyText="No matching theme found."

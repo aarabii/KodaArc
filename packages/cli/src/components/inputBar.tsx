@@ -10,6 +10,7 @@ import { useCommandMenu } from "./commands/useCommandMenu";
 import { useToast } from "../providers/toast";
 import { useDialog } from "../providers/dialog";
 import { useKeyboardLayer } from "../providers/keyboardLayer";
+import { useTheme } from "../providers/theme";
 
 type InputBarProps = {
   onSubmit: (text: string) => void;
@@ -37,6 +38,7 @@ export const TEXT_AREA_KEY_BINDINGS: KeyBinding[] = [
 ];
 
 export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
+  const { colors } = useTheme();
   const placeholderTxt =
     placeholderValues[Math.floor(Math.random() * placeholderValues.length)];
 
@@ -147,7 +149,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
     <box width="100%" alignItems="center">
       <box
         border={["left"]}
-        borderColor="cyan"
+        borderColor={colors.primary}
         width="100%"
         customBorderChars={{
           ...EmptyBorder,
@@ -160,7 +162,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
           justifyContent="center"
           paddingX={2}
           paddingY={1}
-          backgroundColor="#001219"
+          backgroundColor={colors.surface}
           width="100%"
           gap={1}
         >
@@ -170,7 +172,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
               bottom="100%"
               left={0}
               width="100%"
-              backgroundColor="#1A1A24"
+              backgroundColor={colors.dialogSurface}
               zIndex={10}
             >
               <CommandMenu

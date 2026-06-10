@@ -1,6 +1,9 @@
 import { RGBA } from "@opentui/core";
+import { useTheme } from "../providers/theme";
 
 export function Header() {
+  const { colors } = useTheme();
+
   return (
     <box justifyContent="center" alignItems="center" padding={1}>
       <box
@@ -9,9 +12,9 @@ export function Header() {
         alignItems="center"
         gap={1}
       >
-        <ascii-font font="block" text="Koda" color={RGBA.fromHex("#3f5466")} />
-        <ascii-font font="tiny" text="-" color="gray" />
-        <ascii-font font="block" text="Arc" color={RGBA.fromHex("#d0cfcc")} />
+        <ascii-font font="block" text="Koda" color={RGBA.fromHex(colors.thinking)} />
+        <ascii-font font="tiny" text="-" color={RGBA.fromHex(colors.thinking)} />
+        <ascii-font font="block" text="Arc" color={RGBA.fromHex(colors.primary)} />
       </box>
     </box>
   );

@@ -6,6 +6,7 @@ import {
 } from "@opentui/core";
 import { useKeyboard } from "@opentui/react";
 import { useKeyboardLayer } from "../../providers/keyboardLayer";
+import { useTheme } from "../../providers/theme";
 
 const MAX_VISIABLE_ITEMS = 5;
 
@@ -30,6 +31,7 @@ export function DialogSearchList<T>({
   placeholder = "Search",
   emptyText = "No results",
 }: DialogSearchListProps<T>) {
+  const { colors } = useTheme();
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [searchValue, setSearchValue] = useState("");
   const inputRef = useRef<InputRenderable>(null);
@@ -116,7 +118,7 @@ export function DialogSearchList<T>({
                 flexDirection="row"
                 height={1}
                 overflow="hidden"
-                backgroundColor={isSelected ? "#89B4FA" : undefined}
+                backgroundColor={isSelected ? colors.selection : undefined}
                 onMouseMove={() => {
                   setSelectedIdx(i);
                   if (onHighlight) onHighlight(item);

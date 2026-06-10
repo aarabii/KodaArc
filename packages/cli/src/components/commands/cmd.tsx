@@ -1,5 +1,22 @@
+import type { ReactNode } from "react";
 import { ThemeDialogContent } from "../../dialogs";
+import { useTheme } from "../../providers/theme";
 import type { CommandType } from "./type";
+
+function DialogText({ fg, children, ...props }: { fg?: string; children: ReactNode } & any) {
+  const { colors } = useTheme();
+  let color = fg;
+  if (fg === "#d0cfcc") {
+    color = "white";
+  } else if (fg === "#3f5466") {
+    color = colors.thinking;
+  } else if (fg === "#82E0AA") {
+    color = colors.success.accent;
+  } else if (fg === "#56D6C2") {
+    color = colors.primary;
+  }
+  return <text fg={color} {...props}>{children}</text>;
+}
 
 export const COMMANDS: CommandType[] = [
   {
@@ -11,10 +28,10 @@ export const COMMANDS: CommandType[] = [
         title: "Start New Conversation",
         children: (
           <box flexDirection="column" gap={1}>
-            <text fg="#d0cfcc">
+            <DialogText fg="#d0cfcc">
               This will clear your current context and message history.
-            </text>
-            <text fg="#3f5466">This action cannot be undone.</text>
+            </DialogText>
+            <DialogText fg="#3f5466">This action cannot be undone.</DialogText>
           </box>
         ),
       });
@@ -29,12 +46,12 @@ export const COMMANDS: CommandType[] = [
         title: "Select Agent",
         children: (
           <box flexDirection="column" gap={1}>
-            <text fg="#d0cfcc">Choose an agent for your session:</text>
+            <DialogText fg="#d0cfcc">Choose an agent for your session:</DialogText>
             <box flexDirection="column" gap={1} paddingTop={1}>
-              <text fg="#82E0AA">› Code General coding assistant</text>
-              <text fg="#d0cfcc"> Debug Root cause and fix errors</text>
-              <text fg="#d0cfcc"> Architect System design and planning</text>
-              <text fg="#d0cfcc"> Review Code review and feedback</text>
+              <DialogText fg="#82E0AA">› Code General coding assistant</DialogText>
+              <DialogText fg="#d0cfcc"> Debug Root cause and fix errors</DialogText>
+              <DialogText fg="#d0cfcc"> Architect System design and planning</DialogText>
+              <DialogText fg="#d0cfcc"> Review Code review and feedback</DialogText>
             </box>
           </box>
         ),
@@ -50,15 +67,15 @@ export const COMMANDS: CommandType[] = [
         title: "Select Model",
         children: (
           <box flexDirection="column" gap={1}>
-            <text fg="#d0cfcc">Choose the model for generation:</text>
+            <DialogText fg="#d0cfcc">Choose the model for generation:</DialogText>
             <box flexDirection="column" gap={1} paddingTop={1}>
-              <text fg="#82E0AA">› claude-sonnet-4 Recommended</text>
-              <text fg="#d0cfcc"> claude-opus-4 Most capable</text>
-              <text fg="#d0cfcc"> claude-haiku-4 Fastest</text>
+              <DialogText fg="#82E0AA">› claude-sonnet-4 Recommended</DialogText>
+              <DialogText fg="#d0cfcc"> claude-opus-4 Most capable</DialogText>
+              <DialogText fg="#d0cfcc"> claude-haiku-4 Fastest</DialogText>
             </box>
-            <text fg="#3f5466" paddingTop={1}>
+            <DialogText fg="#3f5466" paddingTop={1}>
               Current model will apply to new messages only.
-            </text>
+            </DialogText>
           </box>
         ),
       });
@@ -73,15 +90,15 @@ export const COMMANDS: CommandType[] = [
         title: "Past Sessions",
         children: (
           <box flexDirection="column" gap={1}>
-            <text fg="#d0cfcc">Your recent sessions:</text>
+            <DialogText fg="#d0cfcc">Your recent sessions:</DialogText>
             <box flexDirection="column" gap={1} paddingTop={1}>
-              <text fg="#56D6C2">› Today 14:32 Refactoring auth module</text>
-              <text fg="#d0cfcc"> Today 09:11 Fix pagination bug</text>
-              <text fg="#d0cfcc"> Yesterday Setup CI pipeline</text>
+              <DialogText fg="#56D6C2">› Today 14:32 Refactoring auth module</DialogText>
+              <DialogText fg="#d0cfcc"> Today 09:11 Fix pagination bug</DialogText>
+              <DialogText fg="#d0cfcc"> Yesterday Setup CI pipeline</DialogText>
             </box>
-            <text fg="#3f5466" paddingTop={1}>
+            <DialogText fg="#3f5466" paddingTop={1}>
               Sessions are stored in ~/.kodaarc/sessions
-            </text>
+            </DialogText>
           </box>
         ),
       });
@@ -118,10 +135,10 @@ export const COMMANDS: CommandType[] = [
         title: "Sign Out",
         children: (
           <box flexDirection="column" gap={1}>
-            <text fg="#d0cfcc">
+            <DialogText fg="#d0cfcc">
               Are you sure you want to sign out of KodaArc?
-            </text>
-            <text fg="#3f5466">Your local sessions will remain saved.</text>
+            </DialogText>
+            <DialogText fg="#3f5466">Your local sessions will remain saved.</DialogText>
           </box>
         ),
       });
@@ -158,8 +175,8 @@ export const COMMANDS: CommandType[] = [
         title: "Quit KodaArc",
         children: (
           <box flexDirection="column" gap={1}>
-            <text fg="#d0cfcc">Are you sure you want to exit?</text>
-            <text fg="#3f5466">Your current session will be saved.</text>
+            <DialogText fg="#d0cfcc">Are you sure you want to exit?</DialogText>
+            <DialogText fg="#3f5466">Your current session will be saved.</DialogText>
           </box>
         ),
       });
