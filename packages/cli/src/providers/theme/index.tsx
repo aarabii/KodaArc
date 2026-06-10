@@ -19,7 +19,7 @@ type ThemePreferences = {
   themeName: string;
 };
 
-function getInitialTheme(): ThemeProps {
+export function getInitialTheme(): ThemeProps {
   const fallbackTheme = DEFAULT_THEME ?? THEME[2];
 
   if (!fallbackTheme) {
