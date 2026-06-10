@@ -30,6 +30,11 @@ export function useCommandMenu(): UseCommandMenuOptions {
     [commandQuery],
   );
 
+  const close = () => {
+    setShowCommandMenu(false);
+    pop("command");
+  };
+
   const handleContentChange = (content: string) => {
     setTxtValue(content);
     setSelectedIdx(0);
@@ -44,21 +49,18 @@ export function useCommandMenu(): UseCommandMenuOptions {
     if (prefix !== null && !prefix.includes(" ")) {
       setShowCommandMenu(true);
       push("command", () => {
-        setShowCommandMenu(false);
-        pop("command");
+        close();
         return true;
       });
     } else {
-      setShowCommandMenu(false);
-      pop("command");
+      close();
     }
   };
 
   const resolveCommand = (idx: number): CommandType | null => {
     const cmd = filteredCommands[idx];
     if (cmd) {
-      setShowCommandMenu(false);
-      pop("command");
+      close();
     }
     return cmd || null;
   };
@@ -68,8 +70,7 @@ export function useCommandMenu(): UseCommandMenuOptions {
 
     if (key.name === "escape") {
       key.preventDefault();
-      setShowCommandMenu(false);
-      pop("command");
+      close();
     } else if (key.name === "up") {
       key.preventDefault();
       setSelectedIdx((idx: number) => {
