@@ -8,6 +8,7 @@ import { CommandMenu } from "./commands";
 import type { CommandType } from "./commands/type";
 import { useCommandMenu } from "./commands/useCommandMenu";
 import { useToast } from "../providers/toast";
+import { useKeyboardLayer } from "../providers/keyboardLayer";
 
 type InputBarProps = {
   onSubmit: (text: string) => void;
@@ -42,6 +43,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
   const onSubmitRef = useRef<() => void>(() => {});
   const renderer = useRenderer();
   const toast = useToast();
+  const { isTopLayer, setResponder } = useKeyboardLayer();
 
   const {
     showCommandMenu,
@@ -121,6 +123,22 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
 
     handleSubmit();
   };
+
+  useEffect(() => {
+    setResponder("base", () => {
+      if (disabled) return false;
+      const txtarea = textareaRef.current;
+
+      if (txtarea && txtarea.plainText.length > 0) {
+        txtarea.setText("");
+        return true;
+      }
+
+      return false;
+    });
+
+    return () => setResponder("base", null);
+  }, [disabled, setResponder]);
 
   return (
     <box width="100%" alignItems="center">
