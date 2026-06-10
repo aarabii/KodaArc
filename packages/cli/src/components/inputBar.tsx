@@ -182,7 +182,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
           <textarea
             ref={textareaRef}
             onContentChange={handleTxtAreaCntChange}
-            focused={!disabled}
+            focused={(!disabled && isTopLayer("base")) || isTopLayer("command")}
             keyBindings={TEXT_AREA_KEY_BINDINGS}
             placeholder={placeholderTxt}
           />
