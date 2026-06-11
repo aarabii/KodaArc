@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { ThemeDialogContent } from "../../dialogs";
-import { useTheme } from "../../providers/theme";
-import type { CommandType } from "./type";
+import { useTheme } from "../../hooks";
+import type { CommandType } from "../../types";
 
 function DialogText({ fg, children, ...props }: { fg?: string; children: ReactNode } & any) {
   const { colors } = useTheme();

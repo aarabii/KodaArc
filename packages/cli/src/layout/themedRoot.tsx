@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
-import { useTheme } from "../providers/theme";
-import { Header } from "../components/header";
-import { InputBar } from "../components/inputBar";
+import { useTheme } from "../hooks";
 
 type Props = {
   children: ReactNode;
@@ -20,21 +18,4 @@ export function ThemedRoot({ children }: Props) {
       {children}
     </box>
   );
-}
-
-{
-  /* <box
-  alignItems="center"
-  justifyContent="center"
-  flexGrow={1}
-  backgroundColor={colors.background}
-  width="100%"
-  height="100%"
-  gap={2}
->
-  <Header />
-  <box width="100%" maxWidth={78} paddingX={2}>
-    <InputBar onSubmit={() => {}} />
-  </box>
-</box>; */
 }

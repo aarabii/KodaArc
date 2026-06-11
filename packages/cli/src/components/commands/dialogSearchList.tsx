@@ -5,8 +5,7 @@ import {
   type ScrollBoxRenderable,
 } from "@opentui/core";
 import { useKeyboard } from "@opentui/react";
-import { useKeyboardLayer } from "../../providers/keyboardLayer";
-import { useTheme } from "../../providers/theme";
+import { useKeyboardLayer, useTheme } from "../../hooks";
 
 const MAX_VISIABLE_ITEMS = 5;
 

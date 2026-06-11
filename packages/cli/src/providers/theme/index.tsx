@@ -3,14 +3,13 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 import {
-  createContext,
-  useContext,
   useState,
   useCallback,
   type ReactNode,
 } from "react";
-import type { ThemeColorProps, ThemeProps } from "../../theme";
+import type { ThemeProps } from "../../types";
 import { THEME, DEFAULT_THEME } from "../../theme";
+import { ThemeContext } from "./context";
 
 const CONFIG_DIR = join(homedir(), ".koda-arc");
 const THEME_PREFERENCES_PATH = join(CONFIG_DIR, "pref.json");
@@ -56,24 +55,6 @@ function persistTheme(theme: ThemeProps) {
   } catch {
     // ....
   }
-}
-
-type ThemeContextValue = {
-  colors: ThemeColorProps;
-  currentTheme: ThemeProps;
-  setTheme: (theme: ThemeProps) => void;
-};
-
-const ThemeContext = createContext<ThemeContextValue | null>(null);
-
-export function useTheme(): ThemeContextValue {
-  const value = useContext(ThemeContext);
-
-  if (!value) {
-    throw new Error("UseTheme must be used within a ThemeProvide");
-  }
-
-  return value;
 }
 
 type ThemeProviderProps = {

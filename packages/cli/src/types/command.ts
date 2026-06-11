@@ -1,5 +1,5 @@
-import type { DialogContextValue } from "../../providers/dialog";
-import type { ToastContextValue } from "../../providers/toast";
+import type { DialogContextValue } from "./dialog";
+import type { ToastContextValue } from "./toast";
 
 export type CommandContext = {
   exit: () => void;

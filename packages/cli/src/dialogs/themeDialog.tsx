@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useDialog } from "../providers/dialog";
-import { useTheme } from "../providers/theme";
+import { useDialog, useTheme } from "../hooks";
 import { DialogSearchList } from "../components/commands/dialogSearchList";
 import { THEME } from "../theme";
-import type { ThemeProps } from "../theme";
+import type { ThemeProps } from "../types";
 
 export const ThemeDialogContent = () => {
   const dialog = useDialog();

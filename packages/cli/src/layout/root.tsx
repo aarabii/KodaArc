@@ -1,8 +1,10 @@
 import { Outlet } from "react-router";
-import { ToastProvider } from "../providers/toast";
-import { DialogProvider } from "../providers/dialog";
-import { KeyboardLayerProvider } from "../providers/keyboardLayer";
-import { ThemeProvider } from "../providers/theme";
+import {
+  ToastProvider,
+  DialogProvider,
+  KeyboardLayerProvider,
+  ThemeProvider,
+} from "../providers";
 import { ThemedRoot } from "./themedRoot";
 
 export function RootLayout() {

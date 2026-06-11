@@ -2,15 +2,11 @@ import { useRef, useCallback, useEffect } from "react";
 import type { TextareaRenderable } from "@opentui/core";
 import { useRenderer } from "@opentui/react";
 import type { KeyBinding } from "@opentui/core";
-import { EmptyBorder } from "./border";
-import { StatusBar } from "./statusbar";
+import { EmptyBorder, StatusBar } from "./";
 import { CommandMenu } from "./commands";
-import type { CommandType } from "./commands/type";
+import type { CommandType } from "../types";
 import { useCommandMenu } from "./commands/useCommandMenu";
-import { useToast } from "../providers/toast";
-import { useDialog } from "../providers/dialog";
-import { useKeyboardLayer } from "../providers/keyboardLayer";
-import { useTheme } from "../providers/theme";
+import { useToast, useDialog, useKeyboardLayer, useTheme } from "../hooks";
 
 type InputBarProps = {
   onSubmit: (text: string) => void;

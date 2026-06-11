@@ -7,3 +7,7 @@ export type ToastOptions = {
 };
 
 export const DEFAULT_TOAST_DURATION = 3000;
+
+export type ToastContextValue = {
+  show: (options: ToastOptions) => void;
+};
