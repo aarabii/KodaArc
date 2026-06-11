@@ -5,7 +5,7 @@ import { asciiLines } from "./assets/ascii";
 import { getInitialTheme } from "./providers/theme";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { RootLayout } from "./layout/root";
-import { Home } from "./screens/home";
+import { Home, NewSession, Session } from "./screens";
 
 const router = createMemoryRouter([
   {
@@ -18,19 +18,11 @@ const router = createMemoryRouter([
       },
       {
         path: "sessions/new",
-        element: (
-          <box>
-            <text>sessions</text>
-          </box>
-        ),
+        element: <NewSession />,
       },
       {
         path: "sessions/:id",
-        element: (
-          <box>
-            <text>session/id</text>
-          </box>
-        ),
+        element: <Session />,
       },
     ],
   },
