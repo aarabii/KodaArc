@@ -4,3 +4,7 @@ export { StatusBar } from "./statusbar";
 export { Dialog } from "./dialog";
 export { Toast } from "./toast";
 export { EmptyBorder, splitBorder } from "./border";
+export { ErrorMessage } from "./message/errorMessage";
+export { UserMessage } from "./message/userMessage";
+export { BotMessage } from "./message/botMessage";
+export { SessionShell } from "./sessionShell";
