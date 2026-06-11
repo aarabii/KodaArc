@@ -17,7 +17,7 @@ export function ErrorMessage({ message }: Props) {
           paddingY={1}
           backgroundColor={colors.error.bg}
         >
-          <text attributes={TextAttributes.DIM}>{message}</text>
+          <text fg={colors.error.text}>{message}</text>
         </box>
       </box>
     </box>

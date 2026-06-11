@@ -78,7 +78,7 @@ export function Dialog({ currentDialog, close }: DialogProps) {
             <text attributes={TextAttributes.BOLD} fg={colors.brand.primary}>
               {title}
             </text>
-            <text attributes={TextAttributes.DIM} onMouseDown={() => close()}>
+            <text fg={colors.text.muted} onMouseDown={() => close()}>
               X
             </text>
           </box>

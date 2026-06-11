@@ -1,6 +1,7 @@
 import { TextAttributes } from "@opentui/core";
 import type { ReactNode } from "react";
 import { InputBar } from "./inputBar";
+import { useTheme } from "../hooks";
 
 type Props = {
   children?: ReactNode;
@@ -15,6 +16,8 @@ export function SessionShell({
   inputDisabled = false,
   loading = false,
 }: Props) {
+  const { colors } = useTheme();
+
   return (
     <box
       flexDirection="column"
@@ -40,12 +43,12 @@ export function SessionShell({
         paddingLeft={1}
       >
         <box flexDirection="row" alignItems="center" gap={2}>
-          {loading ? <text>Loading...</text> : null}
+          {loading ? <text fg={colors.agent.thinking}>Loading...</text> : null}
         </box>
 
         <box flexDirection="row" flexShrink={0} gap={1} marginLeft="auto">
-          <text>tab</text>
-          <text attributes={TextAttributes.DIM}>agents</text>
+          <text fg={colors.brand.primary}>tab</text>
+          <text fg={colors.text.muted}>agents</text>
         </box>
       </box>
     </box>

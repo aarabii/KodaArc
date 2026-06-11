@@ -31,7 +31,7 @@ export function CommandMenu({
   if (filtered.length === 0) {
     return (
       <box paddingX={1}>
-        <text attributes={TextAttributes.DIM}>No command found.</text>
+        <text fg={colors.text.muted}>No command found.</text>
       </box>
     );
   }

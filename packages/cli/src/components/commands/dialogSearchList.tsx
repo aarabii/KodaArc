@@ -106,7 +106,7 @@ export function DialogSearchList<T>({
         onContentChange={handleContentChange}
       />
       {filtered.length === 0 ? (
-        <text attributes={TextAttributes.DIM}>{emptyText}</text>
+        <text fg={colors.text.muted}>{emptyText}</text>
       ) : (
         <scrollbox ref={scrollRef} height={visiableHeight}>
           {filtered.map((item, i) => {
