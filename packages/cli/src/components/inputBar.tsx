@@ -145,7 +145,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
     <box width="100%" alignItems="center">
       <box
         border={["left"]}
-        borderColor={colors.primary}
+        borderColor={colors.brand.primary}
         width="100%"
         customBorderChars={{
           ...EmptyBorder,
@@ -158,7 +158,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
           justifyContent="center"
           paddingX={2}
           paddingY={1}
-          backgroundColor={colors.surface}
+          backgroundColor={colors.bg.surface}
           width="100%"
           gap={1}
         >
@@ -168,7 +168,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
               bottom="100%"
               left={0}
               width="100%"
-              backgroundColor={colors.dialogSurface}
+              backgroundColor={colors.bg.elevated}
               zIndex={10}
             >
               <CommandMenu

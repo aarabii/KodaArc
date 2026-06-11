@@ -38,14 +38,14 @@ const renderer = await createCliRenderer({
   exitOnCtrlC: false,
   onDestroy: async () => {
     const theme = getInitialTheme();
-    const primary = toAnsi(theme.colors.primary, "36");
-    const thinking = toAnsi(theme.colors.thinking, "35");
+    const primary = toAnsi(theme.colors.brand.primary, "36");
+    const thinking = toAnsi(theme.colors.agent.thinking, "35");
     const success = toAnsi(theme.colors.success.accent, "32");
     const info = toAnsi(theme.colors.info.accent, "36");
-    const dim = toAnsi(theme.colors.dimSeparator, "90");
+    const dim = toAnsi(theme.colors.border.dim, "90");
 
-    const primaryRgb = hexToRgb(theme.colors.primary);
-    const thinkingRgb = hexToRgb(theme.colors.thinking);
+    const primaryRgb = hexToRgb(theme.colors.brand.primary);
+    const thinkingRgb = hexToRgb(theme.colors.agent.thinking);
 
     /** Smooth truecolor interpolation: thinking → primary */
     function gradientAnsi(t: number): string {

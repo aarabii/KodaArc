@@ -12,9 +12,9 @@ export function Header() {
         alignItems="center"
         gap={1}
       >
-        <ascii-font font="block" text="Koda" color={RGBA.fromHex(colors.thinking)} />
-        <ascii-font font="tiny" text="-" color={RGBA.fromHex(colors.thinking)} />
-        <ascii-font font="block" text="Arc" color={RGBA.fromHex(colors.primary)} />
+        <ascii-font font="block" text="Koda" color={RGBA.fromHex(colors.agent.thinking)} />
+        <ascii-font font="tiny" text="-" color={RGBA.fromHex(colors.agent.thinking)} />
+        <ascii-font font="block" text="Arc" color={RGBA.fromHex(colors.brand.primary)} />
       </box>
     </box>
   );

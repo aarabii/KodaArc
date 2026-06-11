@@ -6,8 +6,8 @@ export function StatusBar() {
 
   return (
     <box flexDirection="row" gap={1}>
-      <text fg={colors.primary}>Build</text>
-      <text attributes={TextAttributes.DIM} fg={colors.thinking}>
+      <text fg={colors.brand.primary}>Build</text>
+      <text attributes={TextAttributes.DIM} fg={colors.agent.thinking}>
         &#8250;
       </text>
       <text>opus-4-8</text>

@@ -10,7 +10,7 @@ export function ThemedRoot({ children }: Props) {
 
   return (
     <box
-      backgroundColor={colors.background}
+      backgroundColor={colors.bg.base}
       width="100%"
       height="100%"
       flexGrow={1}

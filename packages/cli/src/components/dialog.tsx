@@ -44,7 +44,7 @@ export function Dialog({ currentDialog, close }: DialogProps) {
       <box
         width={Math.min(60, width - 41)}
         height="auto"
-        borderColor={colors.primary}
+        borderColor={colors.brand.primary}
         border={["top", "bottom", "left", "right"]}
         customBorderChars={{
           topLeft: "╭",
@@ -63,7 +63,7 @@ export function Dialog({ currentDialog, close }: DialogProps) {
       >
         <box
           width="100%"
-          backgroundColor={colors.dialogSurface}
+          backgroundColor={colors.bg.elevated}
           paddingX={4}
           paddingY={1}
           flexDirection="column"
@@ -75,7 +75,7 @@ export function Dialog({ currentDialog, close }: DialogProps) {
             alignItems="center"
             justifyContent="space-between"
           >
-            <text attributes={TextAttributes.BOLD} fg={colors.primary}>
+            <text attributes={TextAttributes.BOLD} fg={colors.brand.primary}>
               {title}
             </text>
             <text attributes={TextAttributes.DIM} onMouseDown={() => close()}>

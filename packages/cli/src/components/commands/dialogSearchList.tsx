@@ -117,7 +117,7 @@ export function DialogSearchList<T>({
                 flexDirection="row"
                 height={1}
                 overflow="hidden"
-                backgroundColor={isSelected ? colors.selection : undefined}
+                backgroundColor={isSelected ? colors.selection.bg : undefined}
                 onMouseMove={() => {
                   setSelectedIdx(i);
                   if (onHighlight) onHighlight(item);
