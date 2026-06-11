@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ThemeDialogContent } from "../../dialogs";
+import { ThemeDialogContent, SpinnerDialogContent } from "../../dialogs";
 import { useTheme } from "../../hooks";
 import type { CommandType } from "../../types";
 
@@ -123,6 +123,17 @@ export const COMMANDS: CommandType[] = [
       ctx.dialog.open({
         title: "Select Theme",
         children: <ThemeDialogContent />,
+      });
+    },
+  },
+  {
+    name: "spinner",
+    desc: "Choose your preferred loading spinner",
+    value: "/spinner",
+    action: (ctx) => {
+      ctx.dialog.open({
+        title: "Select Spinner",
+        children: <SpinnerDialogContent />,
       });
     },
   },

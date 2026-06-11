@@ -2,7 +2,7 @@ import "opentui-spinner/react";
 import { useState } from "react";
 import { useTheme } from "../hooks";
 
-const spinnerName = [
+export const SPINNER_NAMES = [
   "dots",
   "dots2",
   "dots3",
@@ -96,7 +96,7 @@ const spinnerName = [
 ];
 
 export function Spinner() {
-  const { colors } = useTheme();
+  const { colors, currentSpinner } = useTheme();
 
-  return <spinner name="aesthetic" color={colors.agent.thinking} />;
+  return <spinner name={(currentSpinner || "arc") as any} color={colors.agent.thinking} />;
 }

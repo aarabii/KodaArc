@@ -16,6 +16,7 @@ const THEME_PREFERENCES_PATH = join(CONFIG_DIR, "pref.json");
 
 type ThemePreferences = {
   themeName: string;
+  spinnerName?: string;
 };
 
 export function getInitialTheme(): ThemeProps {
@@ -40,13 +41,25 @@ export function getInitialTheme(): ThemeProps {
   }
 }
 
-function persistTheme(theme: ThemeProps) {
+export function getInitialSpinner(): string {
+  try {
+    const preferences = JSON.parse(
+      readFileSync(THEME_PREFERENCES_PATH, "utf-8"),
+    ) as Partial<ThemePreferences>;
+
+    return preferences.spinnerName ?? "arc";
+  } catch {
+    return "arc";
+  }
+}
+
+function persistPreferences(themeName: string, spinnerName: string) {
   try {
     mkdirSync(CONFIG_DIR, { recursive: true });
     writeFileSync(
       THEME_PREFERENCES_PATH,
       JSON.stringify(
-        { themeName: theme.name } satisfies ThemePreferences,
+        { themeName, spinnerName } satisfies ThemePreferences,
         null,
         2,
       ),
@@ -63,15 +76,27 @@ type ThemeProviderProps = {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [currentTheme, setCurrTheme] = useState<ThemeProps>(getInitialTheme);
+  const [currentSpinner, setCurrSpinner] = useState<string>(getInitialSpinner);
 
   const setTheme = useCallback((theme: ThemeProps) => {
     setCurrTheme(theme);
-    persistTheme(theme);
-  }, []);
+    persistPreferences(theme.name, currentSpinner);
+  }, [currentSpinner]);
+
+  const setSpinner = useCallback((spinnerName: string) => {
+    setCurrSpinner(spinnerName);
+    persistPreferences(currentTheme.name, spinnerName);
+  }, [currentTheme]);
 
   return (
     <ThemeContext.Provider
-      value={{ colors: currentTheme.colors, currentTheme, setTheme }}
+      value={{
+        colors: currentTheme.colors,
+        currentTheme,
+        setTheme,
+        currentSpinner,
+        setSpinner,
+      }}
     >
       {children}
     </ThemeContext.Provider>

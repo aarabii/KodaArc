@@ -9,7 +9,7 @@ export function UserMessage({ message }: Props) {
 
   return (
     <box width="100%" alignItems="center">
-      <box border={["left"]} borderColor={colors.text.primary}>
+      <box border={["left"]} width="100%" borderColor={colors.text.primary}>
         <box
           justifyContent="center"
           paddingX={2}

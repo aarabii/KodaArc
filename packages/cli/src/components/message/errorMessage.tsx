@@ -10,7 +10,7 @@ export function ErrorMessage({ message }: Props) {
 
   return (
     <box width="100%" alignItems="center">
-      <box border={["left"]} borderColor={colors.error.border}>
+      <box border={["left"]} width="100%" borderColor={colors.error.border}>
         <box
           justifyContent="center"
           paddingX={2}

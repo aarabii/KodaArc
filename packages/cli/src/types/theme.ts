@@ -87,4 +87,6 @@ export type ThemeContextValue = {
   colors: ThemeColorProps;
   currentTheme: ThemeProps;
   setTheme: (theme: ThemeProps) => void;
+  currentSpinner: string;
+  setSpinner: (spinner: string) => void;
 };
