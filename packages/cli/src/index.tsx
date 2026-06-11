@@ -1,47 +1,43 @@
 import { createCliRenderer } from "@opentui/core";
 import { createRoot } from "@opentui/react";
-import { Header } from "./components/header";
-import { InputBar } from "./components/inputBar";
-import { ToastProvider } from "./providers/toast";
-import { KeyboardLayerProvider } from "./providers/keyboardLayer";
-import { DialogProvider } from "./providers/dialog";
-import { ThemeProvider, useTheme, getInitialTheme } from "./providers/theme";
 import { hexToRgb, toAnsi } from "./utils/ansi";
 import { asciiLines } from "./assets/ascii";
+import { getInitialTheme } from "./providers/theme";
+import { createMemoryRouter, RouterProvider } from "react-router";
+import { RootLayout } from "./layout/root";
+import { Home } from "./screens/home";
 
-function RootAPP() {
-  const { colors } = useTheme();
-
-  return (
-    <box
-      alignItems="center"
-      justifyContent="center"
-      flexGrow={1}
-      backgroundColor={colors.background}
-      width="100%"
-      height="100%"
-      gap={2}
-    >
-      <Header />
-      <box width="100%" maxWidth={78} paddingX={2}>
-        <InputBar onSubmit={() => {}} />
-      </box>
-    </box>
-  );
-}
+const router = createMemoryRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "sessions/new",
+        element: (
+          <box>
+            <text>sessions</text>
+          </box>
+        ),
+      },
+      {
+        path: "sessions/:id",
+        element: (
+          <box>
+            <text>session/id</text>
+          </box>
+        ),
+      },
+    ],
+  },
+]);
 
 function App() {
-  return (
-    <ThemeProvider>
-      <KeyboardLayerProvider>
-        <DialogProvider>
-          <ToastProvider>
-            <RootAPP />
-          </ToastProvider>
-        </DialogProvider>
-      </KeyboardLayerProvider>
-    </ThemeProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 const renderer = await createCliRenderer({
@@ -62,15 +58,9 @@ const renderer = await createCliRenderer({
     /** Smooth truecolor interpolation: thinking → primary */
     function gradientAnsi(t: number): string {
       if (!primaryRgb || !thinkingRgb) return t < 0.5 ? thinking : primary;
-      const r = Math.round(
-        thinkingRgb.r + (primaryRgb.r - thinkingRgb.r) * t,
-      );
-      const g = Math.round(
-        thinkingRgb.g + (primaryRgb.g - thinkingRgb.g) * t,
-      );
-      const b = Math.round(
-        thinkingRgb.b + (primaryRgb.b - thinkingRgb.b) * t,
-      );
+      const r = Math.round(thinkingRgb.r + (primaryRgb.r - thinkingRgb.r) * t);
+      const g = Math.round(thinkingRgb.g + (primaryRgb.g - thinkingRgb.g) * t);
+      const b = Math.round(thinkingRgb.b + (primaryRgb.b - thinkingRgb.b) * t);
       return `38;2;${r};${g};${b}`;
     }
 

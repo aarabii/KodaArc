@@ -9,5 +9,8 @@
   },
   "devDependencies": {
     "@types/node": "^25.9.2"
+  },
+  "dependencies": {
+    "react-router": "^7.17.0"
   }
 }
