@@ -1,4 +1,4 @@
-import type { ThemeColorProps, ThemeProps } from "./types";
+import type { ThemeColorProps, ThemeProps } from "../types";
 
 export const THEME: ThemeProps[] = [
   {

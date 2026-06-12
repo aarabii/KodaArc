@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 import { useState, useCallback, type ReactNode } from "react";
 import type { ThemeProps } from "../../types";
-import { THEME, DEFAULT_THEME } from "../../theme";
+import { THEME, DEFAULT_THEME } from "../../themes";
 import { ThemeContext } from "./context";
 
 const CONFIG_DIR = join(homedir(), ".koda-arc");
