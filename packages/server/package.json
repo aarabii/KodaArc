@@ -5,7 +5,11 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "dev": "bun run --hot src/index.ts"
+  },
   "dependencies": {
-    "@koda-arc/shared": "workspace:*"
+    "@koda-arc/shared": "workspace:*",
+    "hono": "^4.12.25"
   }
 }
