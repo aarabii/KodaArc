@@ -95,4 +95,5 @@ export function findSupportedChatModelById(
   return SUPPORTED_CHAT_MODELS.find((model) => model.id === modelId);
 }
 
-export const DEFAULT_CHAT_MODEL: SupportedChatModel = SUPPORTED_CHAT_MODELS[0];
+export const DEFAULT_CHAT_MODEL_ID: SupportedChatModelId =
+  SUPPORTED_CHAT_MODELS[0].id;

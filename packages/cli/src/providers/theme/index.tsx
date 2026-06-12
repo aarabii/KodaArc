@@ -2,11 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-import {
-  useState,
-  useCallback,
-  type ReactNode,
-} from "react";
+import { useState, useCallback, type ReactNode } from "react";
 import type { ThemeProps } from "../../types";
 import { THEME, DEFAULT_THEME } from "../../theme";
 import { ThemeContext } from "./context";
@@ -66,7 +62,7 @@ function persistPreferences(themeName: string, spinnerName: string) {
       "utf-8",
     );
   } catch {
-    // ....
+    // IGNORE
   }
 }
 
@@ -78,15 +74,21 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   const [currentTheme, setCurrTheme] = useState<ThemeProps>(getInitialTheme);
   const [currentSpinner, setCurrSpinner] = useState<string>(getInitialSpinner);
 
-  const setTheme = useCallback((theme: ThemeProps) => {
-    setCurrTheme(theme);
-    persistPreferences(theme.name, currentSpinner);
-  }, [currentSpinner]);
+  const setTheme = useCallback(
+    (theme: ThemeProps) => {
+      setCurrTheme(theme);
+      persistPreferences(theme.name, currentSpinner);
+    },
+    [currentSpinner],
+  );
 
-  const setSpinner = useCallback((spinnerName: string) => {
-    setCurrSpinner(spinnerName);
-    persistPreferences(currentTheme.name, spinnerName);
-  }, [currentTheme]);
+  const setSpinner = useCallback(
+    (spinnerName: string) => {
+      setCurrSpinner(spinnerName);
+      persistPreferences(currentTheme.name, spinnerName);
+    },
+    [currentTheme],
+  );
 
   return (
     <ThemeContext.Provider
