@@ -35,6 +35,7 @@ model Message {
   status MessageStatus
   content String
   parts Json
+  model String
   mode Mode
   duration Int?
   createdAt DateTime @default(now())
