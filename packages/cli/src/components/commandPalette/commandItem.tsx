@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { ThemeDialogContent, SpinnerDialogContent } from "../../dialogs";
 import { useTheme } from "../../hooks";
 import type { CommandType } from "../../types";
+import { HelpDialogContent } from "./help";
 
 type DialogTextVariant = "primary" | "muted" | "success" | "brand";
 
@@ -45,6 +46,17 @@ export const COMMANDS: CommandType[] = [
             <DialogText variant="muted">This action cannot be undone.</DialogText>
           </box>
         ),
+      });
+    },
+  },
+  {
+    name: "help",
+    desc: "Get help and view frequently asked questions",
+    value: "/help",
+    action: (ctx) => {
+      ctx.dialog.open({
+        title: "Help & FAQs",
+        children: <HelpDialogContent />,
       });
     },
   },
