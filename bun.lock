@@ -29,8 +29,10 @@
     "packages/server": {
       "name": "@koda-arc/server",
       "dependencies": {
+        "@hono/zod-validator": "^0.8.0",
         "@koda-arc/shared": "workspace:*",
         "hono": "^4.12.25",
+        "zod": "^4.4.3",
       },
     },
     "packages/shared": {
@@ -41,6 +43,8 @@
     },
   },
   "packages": {
+    "@hono/zod-validator": ["@hono/zod-validator@0.8.0", "", { "peerDependencies": { "hono": ">=4.10.0", "zod": "^3.25.0 || ^4.0.0" } }, "sha512-5uS4S1/LKtZQYvD4BtpPUFkOv8d1wNxHHrChm26buMiEYc1FrHWvDUaKVBwkiVtvSExHSpLGDvcnpI2Copyj9w=="],
+
     "@koda-arc/cli": ["@koda-arc/cli@workspace:packages/cli"],
 
     "@koda-arc/server": ["@koda-arc/server@workspace:packages/server"],
