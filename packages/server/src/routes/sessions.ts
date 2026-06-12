@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
-import { db } from "@koda-arc/database";
+import { db } from "@koda-arc/database/client";
 import { Role, Mode, MessageStatus } from "@koda-arc/database/enums";
 import { findSupportedChatModelById } from "@koda-arc/shared";
 
