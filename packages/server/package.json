@@ -6,6 +6,6 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@koda-arc/shared": "workspaces:*"
+    "@koda-arc/shared": "workspace:*"
   }
 }

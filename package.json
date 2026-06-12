@@ -7,12 +7,7 @@
   "scripts": {
     "dev:cli": "bun run --watch packages/cli/src/index.tsx"
   },
-  "devDependencies": {
-    "@types/node": "^25.9.2"
-  },
   "dependencies": {
-    "opentui-spinner": "^0.0.7",
-    "react-router": "^7.17.0",
-    "zod": "^4.4.3"
+    "dotenv": "^17.4.2"
   }
 }
