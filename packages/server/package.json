@@ -1,0 +1,11 @@
+{
+  "name": "@koda-arc/server",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@koda-arc/shared": "workspaces:*"
+  }
+}

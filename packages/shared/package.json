@@ -1,6 +1,5 @@
 {
   "name": "@koda-arc/shared",
-  "module": "src/index.tsx",
   "type": "module",
   "private": true,
   "exports": {
