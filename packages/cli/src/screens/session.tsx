@@ -4,11 +4,11 @@ import { z } from "zod";
 import type { InferResponseType } from "hono/client";
 
 import {
-  SessionShell,
   UserMessage,
   BotMessage,
   ErrorMessage,
 } from "../components";
+import { SessionShell } from "../layout";
 import { useToast } from "../hooks";
 import { apiClient, getErrorMessage } from "../lib";
 

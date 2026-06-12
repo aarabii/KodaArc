@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
 import { DEFAULT_CHAT_MODEL_ID } from "@koda-arc/shared";
 import { useNavigate, useLocation } from "react-router";
-import { UserMessage, SessionShell } from "../components";
+import { UserMessage } from "../components";
+import { SessionShell } from "../layout";
 import { useToast } from "../hooks";
 import { apiClient, getErrorMessage } from "../lib";
 

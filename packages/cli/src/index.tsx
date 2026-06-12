@@ -4,7 +4,7 @@ import { hexToRgb, toAnsi } from "./utils/ansi";
 import { asciiLines } from "./assets/ascii";
 import { getInitialTheme } from "./providers/theme";
 import { createMemoryRouter, RouterProvider } from "react-router";
-import { RootLayout } from "./layout/root";
+import { RootLayout } from "./layout";
 import { Home, NewSession, Session } from "./screens";
 
 const router = createMemoryRouter([
