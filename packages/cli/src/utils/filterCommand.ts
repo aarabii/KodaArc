@@ -1,5 +1,5 @@
-import { COMMANDS } from "./commandItem";
-import type { CommandType } from "../../types";
+import { COMMANDS } from "../components/commandPalette/commandItem";
+import type { CommandType } from "../types";
 
 export function getFilterCommands(q: string): CommandType[] {
   if (q.length === 0) return COMMANDS;

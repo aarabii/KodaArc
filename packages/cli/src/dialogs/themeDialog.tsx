@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useDialog, useTheme } from "../hooks";
-import { DialogSearchList } from "../components/commandPalette/dialogSearchList";
+import { SearchList } from "../components";
 import { THEME } from "../themes";
 import type { ThemeProps } from "../types";
 
@@ -35,7 +35,7 @@ export const ThemeDialogContent = () => {
   );
 
   return (
-    <DialogSearchList
+    <SearchList
       items={THEME}
       onSelect={handleSelect}
       onHighlight={handleHighlight}

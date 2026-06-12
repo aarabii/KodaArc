@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDialog, useTheme } from "../hooks";
-import { DialogSearchList } from "../components/commandPalette/dialogSearchList";
-import { SPINNER_NAMES } from "../components";
+import { SearchList, SPINNER_NAMES } from "../components";
 import "opentui-spinner/react";
 import { TextAttributes } from "@opentui/core";
 
@@ -40,7 +39,7 @@ export const SpinnerDialogContent = () => {
   return (
     <box flexDirection="row" gap={3} width="100%">
       <box flexGrow={1} flexDirection="column">
-        <DialogSearchList
+        <SearchList
           items={SPINNER_NAMES}
           onSelect={handleSelect}
           onHighlight={handleHighlight}

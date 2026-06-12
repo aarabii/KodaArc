@@ -6,8 +6,7 @@ import { EmptyBorder } from "../common";
 import { StatusBar } from "../feedback";
 import { CommandMenu } from "../commandPalette";
 import type { CommandType } from "../../types";
-import { useCommandMenu } from "../commandPalette/useCommandMenu";
-import { useToast, useDialog, useKeyboardLayer, useTheme } from "../../hooks";
+import { useToast, useDialog, useKeyboardLayer, useTheme, useCommandMenu } from "../../hooks";
 
 type InputBarProps = {
   onSubmit: (text: string) => void;

@@ -1,9 +1,9 @@
 import { useRef, useState, useMemo, type RefObject } from "react";
 import type { ScrollBoxRenderable } from "@opentui/core";
 import { useKeyboard } from "@opentui/react";
-import { getFilterCommands } from "./filterCommand";
-import type { CommandType } from "../../types";
-import { useKeyboardLayer } from "../../hooks";
+import { getFilterCommands } from "../utils";
+import type { CommandType } from "../types";
+import { useKeyboardLayer } from "./useKeyboardLayer";
 
 type UseCommandMenuOptions = {
   showCommandMenu: boolean;

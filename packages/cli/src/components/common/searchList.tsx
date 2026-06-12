@@ -7,9 +7,9 @@ import {
 import { useKeyboard } from "@opentui/react";
 import { useKeyboardLayer, useTheme } from "../../hooks";
 
-const MAX_VISIABLE_ITEMS = 5;
+const MAX_VISIBLE_ITEMS = 5;
 
-type DialogSearchListProps<T> = {
+type SearchListProps<T> = {
   items: T[];
   onSelect: (item: T) => void;
   onHighlight?: (item: T) => void;
@@ -20,7 +20,7 @@ type DialogSearchListProps<T> = {
   emptyText?: string;
 };
 
-export function DialogSearchList<T>({
+export function SearchList<T>({
   items,
   onSelect,
   onHighlight,
@@ -29,7 +29,7 @@ export function DialogSearchList<T>({
   getKey,
   placeholder = "Search",
   emptyText = "No results",
-}: DialogSearchListProps<T>) {
+}: SearchListProps<T>) {
   const { colors } = useTheme();
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [searchValue, setSearchValue] = useState("");
@@ -52,7 +52,7 @@ export function DialogSearchList<T>({
     ? items.filter((item) => filterFn(item, searchValue))
     : items;
 
-  const visiableHeight = Math.min(filtered.length, MAX_VISIABLE_ITEMS);
+  const visibleHeight = Math.min(filtered.length, MAX_VISIBLE_ITEMS);
 
   useKeyboard((key) => {
     if (!isTopLayer("dialog")) return;
@@ -81,11 +81,11 @@ export function DialogSearchList<T>({
         const sb = scrollRef.current;
 
         if (sb) {
-          const viewPortheight = sb.viewport.height;
-          const visiableEnd = sb.scrollTop + viewPortheight - 1;
+          const viewPortHeight = sb.viewport.height;
+          const visibleEnd = sb.scrollTop + viewPortHeight - 1;
 
-          if (newIdx > visiableEnd) {
-            sb.scrollTo(newIdx - viewPortheight + 1);
+          if (newIdx > visibleEnd) {
+            sb.scrollTo(newIdx - viewPortHeight + 1);
           }
         }
 
@@ -108,7 +108,7 @@ export function DialogSearchList<T>({
       {filtered.length === 0 ? (
         <text fg={colors.text.muted}>{emptyText}</text>
       ) : (
-        <scrollbox ref={scrollRef} height={visiableHeight}>
+        <scrollbox ref={scrollRef} height={visibleHeight}>
           {filtered.map((item, i) => {
             const isSelected = i === selectedIdx;
             return (
