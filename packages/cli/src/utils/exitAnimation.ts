@@ -1,6 +1,6 @@
 import { hexToRgb, toAnsi } from "./ansi";
 import { asciiLines } from "../assets/ascii";
-import { getInitialTheme } from "../providers/theme";
+import { getInitialTheme } from "../lib";
 
 export async function runExitAnimation(): Promise<void> {
   const theme = getInitialTheme();
