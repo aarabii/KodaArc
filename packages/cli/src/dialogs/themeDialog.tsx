@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useDialog, useTheme } from "../hooks";
-import { DialogSearchList } from "../components/commands/dialogSearchList";
+import { DialogSearchList } from "../components/commandPalette/dialogSearchList";
 import { THEME } from "../themes";
 import type { ThemeProps } from "../types";
 

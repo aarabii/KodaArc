@@ -4,9 +4,9 @@ import { useRenderer } from "@opentui/react";
 import type { KeyBinding } from "@opentui/core";
 import { EmptyBorder } from "../common";
 import { StatusBar } from "../feedback";
-import { CommandMenu } from "../commands";
+import { CommandMenu } from "../commandPalette";
 import type { CommandType } from "../../types";
-import { useCommandMenu } from "../commands/useCommandMenu";
+import { useCommandMenu } from "../commandPalette/useCommandMenu";
 import { useToast, useDialog, useKeyboardLayer, useTheme } from "../../hooks";
 
 type InputBarProps = {

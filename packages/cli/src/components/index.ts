@@ -2,5 +2,5 @@ export * from "./common";
 export * from "./input";
 export * from "./feedback";
 export * from "./message";
-export { CommandMenu } from "./commands";
+export { CommandMenu } from "./commandPalette";
 export { SessionShell } from "./sessionShell";
