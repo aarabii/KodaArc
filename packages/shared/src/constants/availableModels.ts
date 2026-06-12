@@ -1,9 +1,4 @@
-export type ModelPricing = {
-  inputUSDperMillionTokens: number;
-  outputUSDperMillionTokens: number;
-};
-
-export type SupportedProvider = "openai" | "anthropic" | "google";
+import type { SupportedProvider, ModelPricing } from "../types";
 
 type SupportedChatModelDefinition = {
   id: string;
