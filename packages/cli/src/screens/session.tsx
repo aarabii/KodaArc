@@ -1,13 +1,5 @@
-import { useParams } from "react-router";
-import { useTheme } from "../hooks";
+import { SessionShell } from "../components";
 
 export function Session() {
-  const { id } = useParams();
-  const { colors } = useTheme();
-
-  return (
-    <box flexGrow={1} padding={2}>
-      <text fg={colors.text.primary}>Session {id}</text>
-    </box>
-  );
+  return <SessionShell onSubmit={() => {}} inputDisabled loading />;
 }

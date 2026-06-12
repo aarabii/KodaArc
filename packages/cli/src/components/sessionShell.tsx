@@ -2,6 +2,7 @@ import { TextAttributes } from "@opentui/core";
 import type { ReactNode } from "react";
 import { InputBar } from "./inputBar";
 import { useTheme } from "../hooks";
+import { Spinner } from "./spinner";
 
 type Props = {
   children?: ReactNode;
@@ -43,7 +44,7 @@ export function SessionShell({
         paddingLeft={1}
       >
         <box flexDirection="row" alignItems="center" gap={2}>
-          {loading ? <text fg={colors.agent.thinking}>Loading...</text> : null}
+          {loading ? <Spinner /> : null}
         </box>
 
         <box flexDirection="row" flexShrink={0} gap={1} marginLeft="auto">
