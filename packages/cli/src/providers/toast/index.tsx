@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import type { ToastOptions, ToastContextValue } from "../../types";
 import { DEFAULT_TOAST_DURATION } from "../../types";
 import { ToastContext } from "./context";
-import { Toast } from "../../components/toast";
+import { Toast } from "../../components";
 
 type ToastProviderProps = {
   children: ReactNode;

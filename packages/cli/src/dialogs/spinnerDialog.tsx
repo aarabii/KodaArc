@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDialog, useTheme } from "../hooks";
 import { DialogSearchList } from "../components/commands/dialogSearchList";
-import { SPINNER_NAMES } from "../components/spinner";
+import { SPINNER_NAMES } from "../components";
 import "opentui-spinner/react";
 import { TextAttributes } from "@opentui/core";
 

@@ -1,7 +1,7 @@
 import { useTerminalDimensions } from "@opentui/react";
-import type { ToastOptions } from "../types";
-import { splitBorder } from "./border";
-import { useTheme } from "../hooks/useTheme";
+import type { ToastOptions } from "../../types";
+import { splitBorder } from "../common";
+import { useTheme } from "../../hooks/useTheme";
 
 type ToastProps = {
   currentToast: ToastOptions | null;

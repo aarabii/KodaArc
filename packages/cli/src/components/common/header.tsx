@@ -1,5 +1,5 @@
 import { RGBA } from "@opentui/core";
-import { useTheme } from "../hooks";
+import { useTheme } from "../../hooks";
 
 export function Header() {
   const { colors } = useTheme();

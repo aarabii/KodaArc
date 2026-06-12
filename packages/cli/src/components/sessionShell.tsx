@@ -1,8 +1,7 @@
 import { TextAttributes } from "@opentui/core";
 import type { ReactNode } from "react";
-import { InputBar } from "./inputBar";
 import { useTheme } from "../hooks";
-import { Spinner } from "./spinner";
+import { InputBar, Spinner } from "./";
 
 type Props = {
   children?: ReactNode;

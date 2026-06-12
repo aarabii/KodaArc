@@ -1,5 +1,5 @@
 import { TextAttributes } from "@opentui/core";
-import { useTheme } from "../hooks";
+import { useTheme } from "../../hooks";
 
 export function StatusBar() {
   const { colors } = useTheme();
