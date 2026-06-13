@@ -145,67 +145,125 @@ async function streamAiRes(
   }
 }
 
-const app = new Hono().post("/:sessionId", submitValidator, async (c) => {
-  const sessionId = c.req.param("sessionId");
+const app = new Hono()
+  .post("/:sessionId/resume", async (c) => {
+    const sessionId = c.req.param("sessionId");
 
-  const session = await db.session.findUnique({
-    where: { id: sessionId },
-    include: { messages: { orderBy: { createdAt: "asc" } } },
-  });
+    const session = await db.session.findUnique({
+      where: { id: sessionId },
+      include: { messages: { orderBy: { createdAt: "asc" } } },
+    });
 
-  if (!session) return c.json({ error: "Session not found" }, 400);
+    if (!session) return c.json({ error: "Session not found" }, 404);
 
-  const res = c.req.valid("json");
+    const lastMessage = session.messages[session.messages.length - 1];
 
-  await db.message.create({
-    data: {
-      sessionId,
-      role: "USER",
-      status: MessageStatus.COMPLETE,
-      model: res.model,
-      content: res.message,
-      mode: res.mode,
-    },
-  });
+    if (!lastMessage || lastMessage.role !== "USER") {
+      return c.json(
+        { error: "Session has no pending user message to resume" },
+        409,
+      );
+    }
 
-  const history = buildConversationHistory([
-    ...session.messages,
-    {
-      role: "USER" as const,
-      content: res.message,
-      status: MessageStatus.COMPLETE,
-    },
-  ]);
+    if (!isSupportedModel(lastMessage.model)) {
+      return c.json(
+        { error: `Session uses unsupported model: ${lastMessage.model}` },
+        409,
+      );
+    }
 
-  const abortController = new AbortController();
+    const history = buildConversationHistory(session.messages);
+    const abortController = new AbortController();
 
-  return streamSSE(
-    c,
-    async (stream) => {
-      stream.onAbort(() => {
-        abortController.abort();
-      });
+    return streamSSE(
+      c,
+      async (stream) => {
+        stream.onAbort(() => {
+          abortController.abort();
+        });
 
-      await streamAiRes(stream, {
+        await streamAiRes(stream, {
+          sessionId,
+          model: lastMessage.model,
+          history,
+          mode: lastMessage.mode,
+          abortController,
+        });
+      },
+      async (err, stream) => {
+        const message = err instanceof Error ? err.message : String(err);
+        const errEvent: ChartStreamEvent = {
+          type: "error",
+          message,
+        };
+        await stream.writeSSE({
+          event: "error",
+          data: JSON.stringify(errEvent),
+        });
+      },
+    );
+  })
+  .post("/:sessionId", submitValidator, async (c) => {
+    const sessionId = c.req.param("sessionId");
+
+    const session = await db.session.findUnique({
+      where: { id: sessionId },
+      include: { messages: { orderBy: { createdAt: "asc" } } },
+    });
+
+    if (!session) return c.json({ error: "Session not found" }, 400);
+
+    const res = c.req.valid("json");
+
+    await db.message.create({
+      data: {
         sessionId,
+        role: "USER",
+        status: MessageStatus.COMPLETE,
         model: res.model,
-        history,
+        content: res.message,
         mode: res.mode,
-        abortController,
-      });
-    },
-    async (err, stream) => {
-      const message = err instanceof Error ? err.message : String(err);
-      const errorEvent: ChartStreamEvent = {
-        type: "error",
-        message,
-      };
-      await stream.writeSSE({
-        event: "error",
-        data: JSON.stringify(errorEvent),
-      });
-    },
-  );
-});
+      },
+    });
+
+    const history = buildConversationHistory([
+      ...session.messages,
+      {
+        role: "USER" as const,
+        content: res.message,
+        status: MessageStatus.COMPLETE,
+      },
+    ]);
+
+    const abortController = new AbortController();
+
+    return streamSSE(
+      c,
+      async (stream) => {
+        stream.onAbort(() => {
+          abortController.abort();
+        });
+
+        await streamAiRes(stream, {
+          sessionId,
+          model: res.model,
+          history,
+          mode: res.mode,
+          abortController,
+        });
+      },
+      async (err, stream) => {
+        const message = err instanceof Error ? err.message : String(err);
+        const errorEvent: ChartStreamEvent = {
+          type: "error",
+          message,
+        };
+        await stream.writeSSE({
+          event: "error",
+          data: JSON.stringify(errorEvent),
+        });
+      },
+    );
+  });
 
 export default app;
