@@ -7,16 +7,14 @@ import * as Sentry from "@sentry/hono/bun";
 const app = new Hono();
 
 app.use(
+  "*",
   sentry(app, {
-    dsn: "https://5ec2df9bb675441856d73429c94092f3@o4511556841897984.ingest.us.sentry.io/4511556848320512",
+    dsn: process.env.SENTRY_DNS,
     tracesSampleRate: 1.0,
     enableLogs: true,
     integrations: [
       Sentry.consoleLoggingIntegration({ levels: ["log", "warn", "error"] }),
     ],
-    // To disable sending user data, uncomment the line below. For more info visit:
-    // https://docs.sentry.io/platforms/javascript/guides/hono/configuration/options/#dataCollection
-    // dataCollection: { userInfo: false },
   }),
 );
 
