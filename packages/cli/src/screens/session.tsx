@@ -3,11 +3,7 @@ import { useParams, useLocation, useNavigate } from "react-router";
 import { z } from "zod";
 import type { InferResponseType } from "hono/client";
 
-import {
-  UserMessage,
-  BotMessage,
-  ErrorMessage,
-} from "../components";
+import { UserMessage, BotMessage, ErrorMessage } from "../components";
 import { SessionShell } from "../layout";
 import { useToast } from "../hooks";
 import { apiClient, getErrorMessage } from "../lib";
@@ -25,7 +21,7 @@ const sessionLocationSchema = z.object({
 
 function ChatMessage({ msg }: { msg: SessionData["messages"][number] }) {
   if (msg.role === "USER") return <UserMessage message={msg.content} />;
-  if (msg.role === "BOT")
+  if (msg.role === "ASSISTANT")
     return <BotMessage message={msg.content} model={msg.model} />;
 
   return <ErrorMessage message={msg.content} />;

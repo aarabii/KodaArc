@@ -14,7 +14,7 @@ datasource db {
 
 enum Role {
   USER
-  BOT
+  ASSISTANT
   ERROR
 }
 
@@ -34,7 +34,7 @@ model Message {
   role Role
   status MessageStatus
   content String
-  parts Json
+  parts Json?
   model String
   mode Mode
   duration Int?
