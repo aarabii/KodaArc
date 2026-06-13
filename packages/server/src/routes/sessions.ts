@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import * as Sentry from "@sentry/hono/bun";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { db } from "@koda-arc/database/client";
@@ -25,6 +26,11 @@ const createSessionValidator = zValidator(
   createSessionSchema,
   (res, c) => {
     if (!res.success) {
+      Sentry.logger.warn("Session creation validation failed", {
+        path: c.req.path,
+        issues: res.error.issues.length,
+      });
+
       return c.json(
         {
           error: "Invalid request body",
@@ -37,7 +43,7 @@ const createSessionValidator = zValidator(
 
 const app = new Hono()
   .get("/", async (c) => {
-    const session = await db.session.findMany({
+    const sessions = await db.session.findMany({
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -46,7 +52,11 @@ const app = new Hono()
       },
     });
 
-    return c.json(session);
+    Sentry.logger.info("Listed sessions", {
+      count: sessions.length,
+    });
+
+    return c.json(sessions);
   })
   .get("/:id", async (c) => {
     const id = c.req.param("id");
@@ -58,6 +68,10 @@ const app = new Hono()
     });
 
     if (!session) {
+      Sentry.logger.warn("Session not found", {
+        sessionId: id,
+        userId: "DEV_MOCK_USER",
+      });
       return c.json(
         {
           error: "Session not found",
@@ -92,6 +106,12 @@ const app = new Hono()
         }),
       },
       include: { messages: true },
+    });
+
+    Sentry.logger.info("Created session", {
+      sessionId: session.id,
+      title: session.title,
+      cwd: session.cwd,
     });
 
     return c.json(session, 201);
