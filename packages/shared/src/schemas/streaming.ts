@@ -24,7 +24,7 @@ export const messagePartsSchema = z.array(messagePartSchema);
 
 export type MessagePart = z.infer<typeof messagePartSchema>;
 
-export const chartStreamEventSchema = z.discriminatedUnion("type", [
+export const ChatStreamEventSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("text-delta"),
     text: z.string(),
@@ -55,4 +55,4 @@ export const chartStreamEventSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
-export type ChartStreamEvent = z.infer<typeof chartStreamEventSchema>;
+export type ChatStreamEvent = z.infer<typeof ChatStreamEventSchema>;

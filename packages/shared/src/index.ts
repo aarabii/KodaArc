@@ -12,7 +12,7 @@ export {
   toolCallArgsSchema,
   messagePartSchema,
   messagePartsSchema,
-  chartStreamEventSchema,
+  ChatStreamEventSchema,
   type MessagePart,
-  type ChartStreamEvent,
+  type ChatStreamEvent,
 } from "./schemas";

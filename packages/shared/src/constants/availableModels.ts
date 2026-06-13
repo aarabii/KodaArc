@@ -79,6 +79,14 @@ export const SUPPORTED_CHAT_MODELS = [
       outputUSDperMillionTokens: 4.5,
     },
   },
+  {
+    id: "gemma-4-26b-a4b-it",
+    provider: "google",
+    pricing: {
+      inputUSDperMillionTokens: 0,
+      outputUSDperMillionTokens: 0,
+    },
+  },
 ] as const satisfies readonly SupportedChatModelDefinition[];
 
 export type SupportedChatModel = (typeof SUPPORTED_CHAT_MODELS)[number];
@@ -90,5 +98,7 @@ export function findSupportedChatModelById(
   return SUPPORTED_CHAT_MODELS.find((model) => model.id === modelId);
 }
 
-export const DEFAULT_CHAT_MODEL_ID: SupportedChatModelId =
-  SUPPORTED_CHAT_MODELS[0].id;
+// export const DEFAULT_CHAT_MODEL_ID: SupportedChatModelId =
+//   SUPPORTED_CHAT_MODELS[0].id;
+
+export const DEFAULT_CHAT_MODEL_ID: SupportedChatModelId = "gemma-4-26b-a4b-it";

@@ -8,6 +8,7 @@ type Props = {
   onSubmit: (txt: string) => void;
   inputDisabled?: boolean;
   loading?: boolean;
+  interruptible?: boolean;
 };
 
 export function SessionShell({
@@ -15,6 +16,7 @@ export function SessionShell({
   onSubmit,
   inputDisabled = false,
   loading = false,
+  interruptible = false,
 }: Props) {
   const { colors } = useTheme();
 
@@ -26,6 +28,7 @@ export function SessionShell({
       height="100%"
       paddingX={2}
       paddingY={1}
+      gap={1}
     >
       <scrollbox flexGrow={1} width="100%" stickyScroll stickyStart="bottom">
         <box gap={1}>{children}</box>
@@ -43,7 +46,16 @@ export function SessionShell({
         paddingLeft={1}
       >
         <box flexDirection="row" alignItems="center" gap={2}>
-          {loading ? <Spinner /> : null}
+          {loading ? (
+            <>
+              <Spinner />
+              {interruptible ? (
+                <text>
+                  Press <strong>ESC</strong> to interrrupt
+                </text>
+              ) : null}
+            </>
+          ) : null}
         </box>
 
         <box flexDirection="row" flexShrink={0} gap={1} marginLeft="auto">
