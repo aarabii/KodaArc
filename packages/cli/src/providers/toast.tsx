@@ -1,9 +1,9 @@
 import { useRef, useState, useCallback, useMemo } from "react";
 import type { ReactNode } from "react";
-import type { ToastOptions, ToastContextValue } from "../types";
-import { DEFAULT_TOAST_DURATION } from "../types";
-import { ToastContext } from "../context";
-import { Toast } from "../../components";
+import type { ToastOptions, ToastContextValue } from "./types";
+import { DEFAULT_TOAST_DURATION } from "./types";
+import { ToastContext } from "./context";
+import { Toast } from "../components";
 
 type ToastProviderProps = {
   children: ReactNode;

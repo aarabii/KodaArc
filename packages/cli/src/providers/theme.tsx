@@ -1,11 +1,11 @@
 import { useState, useCallback, type ReactNode } from "react";
-import type { ThemeProps } from "../../themes";
-import { ThemeContext } from "../context";
+import type { ThemeProps } from "../themes";
+import { ThemeContext } from "./context";
 import {
   getInitialTheme,
   getInitialSpinner,
   persistPreferences,
-} from "../../lib/preferences";
+} from "../lib/preferences";
 
 type ThemeProviderProps = {
   children: ReactNode;

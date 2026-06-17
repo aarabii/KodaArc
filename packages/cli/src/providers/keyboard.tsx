@@ -1,11 +1,7 @@
-import React, {
-  useState,
-  useCallback,
-  useRef,
-} from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { useKeyboard, useRenderer } from "@opentui/react";
-import type { Responder } from "../types";
-import { KeyboardLayerContext } from "../context";
+import type { Responder } from "./types";
+import { KeyboardLayerContext } from "./context";
 
 export function KeyboardLayerProvider({
   children,

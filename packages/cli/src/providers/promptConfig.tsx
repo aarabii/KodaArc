@@ -5,15 +5,13 @@ import {
   type SupportedChatModelId,
 } from "@koda-arc/shared";
 import { Mode } from "@koda-arc/database/enums";
-import { PromptConfigContext } from "../context";
+import { PromptConfigContext } from "./context";
 
 type PromptConfigProviderProps = {
   children: ReactNode;
 };
 
-export function PromptConfigProvider({
-  children,
-}: PromptConfigProviderProps) {
+export function PromptConfigProvider({ children }: PromptConfigProviderProps) {
   const [mode, setMode] = useState<Mode>(Mode.BUILD);
   const [model, setModel] = useState<SupportedChatModelId>(
     DEFAULT_CHAT_MODEL_ID,
