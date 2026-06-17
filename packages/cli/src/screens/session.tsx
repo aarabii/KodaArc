@@ -13,7 +13,7 @@ import { SessionShell } from "../layout";
 import { useToast } from "../hooks";
 import { apiClient, getErrorMessage } from "../lib";
 import { useChats } from "../hooks";
-import type { Message, ClientMessagePart } from "../types";
+import type { Message, ClientMessagePart } from "../providers/types";
 import { MessageStatus } from "@koda-arc/database/enums";
 import { useKeyboardLayer } from "../hooks";
 

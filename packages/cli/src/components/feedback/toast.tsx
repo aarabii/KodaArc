@@ -1,5 +1,5 @@
 import { useTerminalDimensions } from "@opentui/react";
-import type { ToastOptions } from "../../types";
+import type { ToastOptions } from "../../providers/types";
 import { splitBorder } from "../common";
 import { useTheme } from "../../hooks/useTheme";
 

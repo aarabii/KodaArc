@@ -8,7 +8,7 @@ import {
   ChatStreamEventSchema,
   type SupportedChatModelId,
 } from "@koda-arc/shared";
-import type { ClientMessagePart, Message } from "../types";
+import type { ClientMessagePart, Message } from "../providers/types";
 
 type StreamingState =
   | { status: "idle" }

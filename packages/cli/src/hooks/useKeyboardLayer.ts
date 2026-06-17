@@ -1,7 +1,8 @@
 import { useContext } from "react";
-import { KeyboardLayerContext } from "../providers/keyboardLayer/context";
+import { KeyboardLayerContext } from "../providers/context";
+import type { KeyboardLayerContextvalue } from "../providers/types";
 
-export function useKeyboardLayer() {
+export function useKeyboardLayer(): KeyboardLayerContextvalue {
   const context = useContext(KeyboardLayerContext);
 
   if (!context) {

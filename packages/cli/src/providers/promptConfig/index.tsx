@@ -5,7 +5,7 @@ import {
   type SupportedChatModelId,
 } from "@koda-arc/shared";
 import { Mode } from "@koda-arc/database/enums";
-import { PromptConfigContext } from "./context";
+import { PromptConfigContext } from "../context";
 
 type PromptConfigProviderProps = {
   children: ReactNode;

@@ -1,8 +1,8 @@
 import { useState, useCallback } from "react";
 import type { ReactNode } from "react";
-import type { DialogConfig, DialogContextValue } from "../../types";
+import type { DialogConfig, DialogContextValue } from "../types";
 import { useKeyboardLayer } from "../../hooks/useKeyboardLayer";
-import { DialogContext } from "./context";
+import { DialogContext } from "../context";
 import { Dialog } from "../../components";
 
 type DialogProviderProps = {

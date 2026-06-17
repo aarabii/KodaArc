@@ -6,7 +6,7 @@ import { EmptyBorder } from "../common";
 import { StatusBar } from "../feedback";
 import { CommandMenu } from "../commandPalette";
 import { useNavigate } from "react-router";
-import type { CommandType } from "../../types";
+import type { CommandType } from "../../providers/types";
 import {
   useToast,
   useDialog,

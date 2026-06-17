@@ -1,6 +1,6 @@
 import { useState, useCallback, type ReactNode } from "react";
-import type { ThemeProps } from "../../types";
-import { ThemeContext } from "./context";
+import type { ThemeProps } from "../types";
+import { ThemeContext } from "../context";
 import {
   getInitialTheme,
   getInitialSpinner,

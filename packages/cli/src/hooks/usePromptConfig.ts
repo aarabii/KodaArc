@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { PromptConfigContext } from "../providers/promptConfig/context";
-import type { PromptConfigContextValue } from "../types";
+import { PromptConfigContext } from "../providers/context";
+import type { PromptConfigContextValue } from "../providers/types";
 
 export function usePromptConfig(): PromptConfigContextValue {
   const value = useContext(PromptConfigContext);

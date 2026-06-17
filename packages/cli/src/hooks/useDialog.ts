@@ -1,11 +1,12 @@
 import { useContext } from "react";
-import { DialogContext } from "../providers/dialog/context";
+import { DialogContext } from "../providers/context";
+import type { DialogContextValue } from "../providers/types";
 
-export function useDialog() {
+export function useDialog(): DialogContextValue {
   const value = useContext(DialogContext);
 
   if (!value) {
-    throw new Error("useDialog must be used within a Dialog Provider");
+    throw new Error("useDialog must be used within a DialogProvider");
   }
 
   return value;

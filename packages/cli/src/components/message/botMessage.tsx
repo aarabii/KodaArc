@@ -1,6 +1,6 @@
 import { Mode } from "@koda-arc/database/enums";
 import { useTheme } from "../../hooks";
-import type { ClientMessagePart } from "../../types";
+import type { ClientMessagePart } from "../../providers/types";
 import { TextAttributes } from "@opentui/core";
 
 type Props = {

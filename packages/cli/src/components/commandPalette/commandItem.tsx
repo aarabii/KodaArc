@@ -5,7 +5,7 @@ import {
   SessionDialog,
 } from "../../dialogs";
 import { useTheme } from "../../hooks";
-import type { CommandType } from "../../types";
+import type { CommandType } from "../../providers/types";
 import { HelpDialogContent } from "./help";
 
 type DialogTextVariant = "primary" | "muted" | "success" | "brand";

@@ -1,6 +1,6 @@
 import { TextAttributes, RGBA } from "@opentui/core";
 import { useKeyboard, useTerminalDimensions } from "@opentui/react";
-import type { DialogConfig } from "../../types";
+import type { DialogConfig } from "../../providers/types";
 import { useKeyboardLayer } from "../../hooks/useKeyboardLayer";
 import { useTheme } from "../../hooks/useTheme";
 
