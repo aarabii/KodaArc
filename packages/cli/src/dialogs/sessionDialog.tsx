@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { TextAttributes } from "@opentui/core";
-import { format } from "date-fns";
+import { format, isToday, isYesterday, isThisWeek } from "date-fns";
 import { useNavigate } from "react-router";
 import { useDialog, useToast } from "../hooks";
 import { apiClient, getErrorMessage } from "../lib";
@@ -69,6 +69,25 @@ export const SessionDialog = () => {
     );
   }
 
+  function formatSessionDate(createdAt: string) {
+    const date = new Date(createdAt);
+    const time = format(date, "hh:mm a");
+
+    if (isToday(date)) {
+      return `Today ${time}`;
+    }
+
+    if (isYesterday(date)) {
+      return `Yesterday ${time}`;
+    }
+
+    if (isThisWeek(date, { weekStartsOn: 1 })) {
+      return `${format(date, "EEEE")} at ${time}`;
+    }
+
+    return format(date, "dd MMM yyyy 'at' hh:mm a");
+  }
+
   return (
     <SearchList
       items={sessons}
@@ -76,14 +95,16 @@ export const SessionDialog = () => {
       filterFn={(s, q) => s.title.toLowerCase().includes(q.toLowerCase())}
       renderItem={(session, isSelected) => (
         <>
-          <text selectable={false} fg={isSelected ? "black" : "white"}></text>
+          <text selectable={false} fg={isSelected ? "black" : "white"}>
+            {session.title}
+          </text>
           <box flexGrow={1} />
           <text
             selectable={false}
             fg={isSelected ? "black" : undefined}
             attributes={TextAttributes.DIM}
           >
-            {format(new Date(session.createdAt), "hh:mm a")}
+            {formatSessionDate(session.createdAt)}
           </text>
         </>
       )}

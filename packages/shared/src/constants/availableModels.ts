@@ -80,7 +80,7 @@ export const SUPPORTED_CHAT_MODELS = [
     },
   },
   {
-    id: "gemma-4-26b-a4b-it",
+    id: "gemini-2.5-flash",
     provider: "google",
     pricing: {
       inputUSDperMillionTokens: 0,
@@ -101,4 +101,4 @@ export function findSupportedChatModelById(
 // export const DEFAULT_CHAT_MODEL_ID: SupportedChatModelId =
 //   SUPPORTED_CHAT_MODELS[0].id;
 
-export const DEFAULT_CHAT_MODEL_ID: SupportedChatModelId = "gemma-4-26b-a4b-it";
+export const DEFAULT_CHAT_MODEL_ID: SupportedChatModelId = "gemini-2.5-flash";
