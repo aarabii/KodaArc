@@ -16,10 +16,11 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@koda-arc/shared": "workspace:*",
     "@koda-arc/database": "workspace:*",
+    "@koda-arc/shared": "workspace:*",
     "@opentui/core": "^0.3.2",
     "@opentui/react": "^0.3.2",
+    "date-fns": "^4.4.0",
     "eventsource-parser": "^3.1.0",
     "hono": "^4.12.25",
     "opentui-spinner": "^0.0.7",

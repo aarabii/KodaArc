@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
-import { ThemeDialogContent, SpinnerDialogContent } from "../../dialogs";
+import {
+  ThemeDialogContent,
+  SpinnerDialogContent,
+  SessionDialog,
+} from "../../dialogs";
 import { useTheme } from "../../hooks";
 import type { CommandType } from "../../types";
 import { HelpDialogContent } from "./help";
@@ -43,7 +47,9 @@ export const COMMANDS: CommandType[] = [
             <DialogText variant="primary">
               This will clear your current context and message history.
             </DialogText>
-            <DialogText variant="muted">This action cannot be undone.</DialogText>
+            <DialogText variant="muted">
+              This action cannot be undone.
+            </DialogText>
           </box>
         ),
       });
@@ -69,12 +75,25 @@ export const COMMANDS: CommandType[] = [
         title: "Select Agent",
         children: (
           <box flexDirection="column" gap={1}>
-            <DialogText variant="primary">Choose an agent for your session:</DialogText>
+            <DialogText variant="primary">
+              Choose an agent for your session:
+            </DialogText>
             <box flexDirection="column" gap={1} paddingTop={1}>
-              <DialogText variant="success">› Code General coding assistant</DialogText>
-              <DialogText variant="primary"> Debug Root cause and fix errors</DialogText>
-              <DialogText variant="primary"> Architect System design and planning</DialogText>
-              <DialogText variant="primary"> Review Code review and feedback</DialogText>
+              <DialogText variant="success">
+                › Code General coding assistant
+              </DialogText>
+              <DialogText variant="primary">
+                {" "}
+                Debug Root cause and fix errors
+              </DialogText>
+              <DialogText variant="primary">
+                {" "}
+                Architect System design and planning
+              </DialogText>
+              <DialogText variant="primary">
+                {" "}
+                Review Code review and feedback
+              </DialogText>
             </box>
           </box>
         ),
@@ -90,10 +109,17 @@ export const COMMANDS: CommandType[] = [
         title: "Select Model",
         children: (
           <box flexDirection="column" gap={1}>
-            <DialogText variant="primary">Choose the model for generation:</DialogText>
+            <DialogText variant="primary">
+              Choose the model for generation:
+            </DialogText>
             <box flexDirection="column" gap={1} paddingTop={1}>
-              <DialogText variant="success">› claude-sonnet-4 Recommended</DialogText>
-              <DialogText variant="primary"> claude-opus-4 Most capable</DialogText>
+              <DialogText variant="success">
+                › claude-sonnet-4 Recommended
+              </DialogText>
+              <DialogText variant="primary">
+                {" "}
+                claude-opus-4 Most capable
+              </DialogText>
               <DialogText variant="primary"> claude-haiku-4 Fastest</DialogText>
             </box>
             <DialogText variant="muted" paddingTop={1}>
@@ -111,19 +137,7 @@ export const COMMANDS: CommandType[] = [
     action: (ctx) => {
       ctx.dialog.open({
         title: "Past Sessions",
-        children: (
-          <box flexDirection="column" gap={1}>
-            <DialogText variant="primary">Your recent sessions:</DialogText>
-            <box flexDirection="column" gap={1} paddingTop={1}>
-              <DialogText variant="brand">› Today 14:32 Refactoring auth module</DialogText>
-              <DialogText variant="primary"> Today 09:11 Fix pagination bug</DialogText>
-              <DialogText variant="primary"> Yesterday Setup CI pipeline</DialogText>
-            </box>
-            <DialogText variant="muted" paddingTop={1}>
-              Sessions are stored in ~/.kodaarc/sessions
-            </DialogText>
-          </box>
-        ),
+        children: <SessionDialog />,
       });
     },
   },
@@ -172,7 +186,9 @@ export const COMMANDS: CommandType[] = [
             <DialogText variant="primary">
               Are you sure you want to sign out of KodaArc?
             </DialogText>
-            <DialogText variant="muted">Your local sessions will remain saved.</DialogText>
+            <DialogText variant="muted">
+              Your local sessions will remain saved.
+            </DialogText>
           </box>
         ),
       });
@@ -209,8 +225,12 @@ export const COMMANDS: CommandType[] = [
         title: "Quit KodaArc",
         children: (
           <box flexDirection="column" gap={1}>
-            <DialogText variant="primary">Are you sure you want to exit?</DialogText>
-            <DialogText variant="muted">Your current session will be saved.</DialogText>
+            <DialogText variant="primary">
+              Are you sure you want to exit?
+            </DialogText>
+            <DialogText variant="muted">
+              Your current session will be saved.
+            </DialogText>
           </box>
         ),
       });
