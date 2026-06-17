@@ -1,43 +1,43 @@
 import { useCallback } from "react";
 import { useDialog, useTheme } from "../hooks";
 import { SearchList } from "../components";
-import { Mode } from "@koda-arc/database/enums";
+import { AgentState } from "@koda-arc/database/enums";
 
-const AVAILABLE_MODES: Mode[] = [Mode.BUILD, Mode.PLAN];
+const AVAILABLE_AGENT_STATES: AgentState[] = [AgentState.BUILD, AgentState.PLAN];
 
 type AgentsDialogContextProps = {
-  currentMode: Mode;
-  onSelectMode: (mode: Mode) => void;
+  currentAgentState: AgentState;
+  onSelectAgentState: (agentState: AgentState) => void;
 };
 
-function getModelLabel(mode: Mode) {
-  return mode === Mode.PLAN ? "Plan" : "Build";
+function getAgentStateLabel(agentState: AgentState) {
+  return agentState === AgentState.PLAN ? "Plan" : "Build";
 }
 
 export const AgentDialogContent = ({
-  currentMode,
-  onSelectMode,
+  currentAgentState,
+  onSelectAgentState,
 }: AgentsDialogContextProps) => {
   const dialog = useDialog();
 
   const handleSelect = useCallback(
-    (nextMode: Mode) => {
-      onSelectMode(nextMode);
+    (nextState: AgentState) => {
+      onSelectAgentState(nextState);
       dialog.close();
     },
-    [onSelectMode, dialog],
+    [onSelectAgentState, dialog],
   );
   return (
     <SearchList
-      items={AVAILABLE_MODES}
+      items={AVAILABLE_AGENT_STATES}
       onSelect={handleSelect}
       filterFn={(item, q) =>
-        getModelLabel(item).toLowerCase().includes(q.toLowerCase())
+        getAgentStateLabel(item).toLowerCase().includes(q.toLowerCase())
       }
       renderItem={(item, isSelected) => (
         <text selectable={false} fg={isSelected ? "black" : "white"}>
-          {item === currentMode ? "" : ""}
-          {getModelLabel(item)}
+          {item === currentAgentState ? "" : ""}
+          {getAgentStateLabel(item)}
         </text>
       )}
       getKey={(item) => item}

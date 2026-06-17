@@ -3,7 +3,7 @@ import { EventSourceParserStream } from "eventsource-parser/stream";
 import prettyMs from "pretty-ms";
 import type { ClientResponse } from "hono/client";
 import { apiClient, getErrorMessage } from "../lib";
-import type { Mode } from "@koda-arc/database/enums";
+import type { AgentState } from "@koda-arc/database/enums";
 import {
   ChatStreamEventSchema,
   type SupportedChatModelId,
@@ -15,14 +15,14 @@ export type Message =
       id: string;
       role: "user";
       content: string;
-      mode: Mode;
+      agentState: AgentState;
       model: SupportedChatModelId;
     }
   | {
       id: string;
       role: "assistant";
       content: string;
-      mode: Mode;
+      agentState: AgentState;
       model: SupportedChatModelId;
       parts: ClientMessagePart[];
       duration?: string;
@@ -35,14 +35,14 @@ type StreamingState =
   | {
       status: "streaming";
       parts: ClientMessagePart[];
-      mode: Mode;
+      agentState: AgentState;
       model: SupportedChatModelId;
     };
 
 type ActiveStream = {
   requestId: string;
   controller: AbortController;
-  mode: Mode;
+  agentState: AgentState;
   model: SupportedChatModelId;
   parts: ClientMessagePart[];
   interruptedCaptured: boolean;
@@ -50,12 +50,12 @@ type ActiveStream = {
 
 type SubmitParams = {
   userText: string;
-  mode: Mode;
+  agentState: AgentState;
   model: SupportedChatModelId;
 };
 
 type RunStreamParams = {
-  mode: Mode;
+  agentState: AgentState;
   model: SupportedChatModelId;
   request: (controller: AbortController) => Promise<ClientResponse<unknown>>;
 };
@@ -90,7 +90,7 @@ export function useChats(sessionId: string, initialMessages: Message[]) {
       setStreaming({
         status: "streaming",
         parts: snapshot,
-        mode: activeStream.mode,
+        agentState: activeStream.agentState,
         model: activeStream.model,
       });
     },
@@ -116,7 +116,7 @@ export function useChats(sessionId: string, initialMessages: Message[]) {
           id: crypto.randomUUID(),
           role: "assistant",
           content: fullText,
-          mode: activeStream.mode,
+          agentState: activeStream.agentState,
           model: activeStream.model,
           parts,
           interrupted: true,
@@ -159,7 +159,9 @@ export function useChats(sessionId: string, initialMessages: Message[]) {
         .body!.pipeThrough(new TextDecoderStream())
         .pipeThrough(new EventSourceParserStream());
 
-      for await (const { data } of stream as unknown as AsyncIterable<{ data: string }>) {
+      for await (const { data } of stream as unknown as AsyncIterable<{
+        data: string;
+      }>) {
         if (!isActiveRequest(activeStream.requestId)) return;
 
         let event;
@@ -205,7 +207,7 @@ export function useChats(sessionId: string, initialMessages: Message[]) {
                 id: event.messageId,
                 role: "assistant",
                 content: fullText,
-                mode: activeStream.mode,
+                agentState: activeStream.agentState,
                 model: activeStream.model,
                 duration: prettyMs(event.durationMs),
                 parts: [...parts],
@@ -230,19 +232,19 @@ export function useChats(sessionId: string, initialMessages: Message[]) {
   );
 
   const runStream = useCallback(
-    async ({ mode, model, request }: RunStreamParams) => {
+    async ({ agentState, model, request }: RunStreamParams) => {
       const controller = new AbortController();
       const activeStream: ActiveStream = {
         requestId: crypto.randomUUID(),
         controller,
-        mode,
+        agentState,
         model,
         parts: [],
         interruptedCaptured: false,
       };
 
       activeStreamRef.current = activeStream;
-      setStreaming({ status: "streaming", parts: [], mode, model });
+      setStreaming({ status: "streaming", parts: [], agentState, model });
 
       try {
         const response = await request(controller);
@@ -287,9 +289,9 @@ export function useChats(sessionId: string, initialMessages: Message[]) {
   );
 
   const resume = useCallback(
-    async ({ mode, model }: Omit<SubmitParams, "userText">) => {
+    async ({ agentState, model }: Omit<SubmitParams, "userText">) => {
       await runStream({
-        mode,
+        agentState,
         model,
         request: async (controller) => {
           return apiClient.chat[":sessionId"].resume.$post(
@@ -309,30 +311,30 @@ export function useChats(sessionId: string, initialMessages: Message[]) {
     if (!last || last.role !== "user") return;
 
     hasAutoResumedRef.current = true;
-    void resume({ mode: last.mode, model: last.model });
+    void resume({ agentState: last.agentState, model: last.model });
   }, [initialMessages, resume]);
 
   const submit = useCallback(
-    async ({ userText, mode, model }: SubmitParams) => {
+    async ({ userText, agentState, model }: SubmitParams) => {
       stopActiveStream(true);
 
       const userMessage: Message = {
         id: crypto.randomUUID(),
         role: "user",
         content: userText,
-        mode,
+        agentState,
         model,
       };
       updateMessages((prev) => [...prev, userMessage]);
 
       await runStream({
-        mode,
+        agentState,
         model,
         request: async (controller) => {
           return apiClient.chat[":sessionId"].$post(
             {
               param: { sessionId },
-              json: { content: userText, mode, model },
+              json: { content: userText, agentState, model },
             },
             { init: { signal: controller.signal } },
           );

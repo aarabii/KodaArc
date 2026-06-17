@@ -66,8 +66,8 @@ export const COMMANDS: CommandType[] = [
         title: "Select Agent",
         children: (
           <AgentDialogContent
-            currentMode={ctx.mode}
-            onSelectMode={ctx.setMode}
+            currentAgentState={ctx.agentState}
+            onSelectAgentState={ctx.setAgentState}
           />
         ),
       });

@@ -38,7 +38,7 @@ function mapDbMessages(dbMessages: SessionData["messages"]): Message[] {
         id: m.id,
         role: "user",
         content: m.content,
-        mode: m.mode,
+        agentState: m.agentState,
         model: m.model as SupportedChatModelId,
       };
     }
@@ -47,7 +47,7 @@ function mapDbMessages(dbMessages: SessionData["messages"]): Message[] {
       role: "assistant",
       content: m.content,
       model: m.model as SupportedChatModelId,
-      mode: m.mode,
+      agentState: m.agentState,
       parts: [{ type: "text", text: m.content }],
       ...(m.duration != null ? { duration: prettyMs(m.duration * 1000) } : {}),
       interrupted: m.status === MessageStatus.INTERUPTED,
@@ -63,7 +63,7 @@ function ChatMessage({ msg }: { msg: Message }) {
     <BotMessage
       parts={msg.parts}
       model={msg.model}
-      mode={msg.mode}
+      agentState={msg.agentState}
       duration={msg.duration}
       streaming={false}
       interrupted={msg.interrupted}
@@ -97,7 +97,7 @@ function SessionChat({ session }: { session: SessionData }) {
   return (
     <SessionShell
       onSubmit={(text) =>
-        submit({ userText: text, mode: "BUILD", model: DEFAULT_CHAT_MODEL_ID })
+        submit({ userText: text, agentState: "BUILD", model: DEFAULT_CHAT_MODEL_ID })
       }
       loading={streaming.status === "streaming"}
       interruptible={streaming.status === "streaming"}
@@ -109,7 +109,7 @@ function SessionChat({ session }: { session: SessionData }) {
         <BotMessage
           parts={streaming.parts}
           model={streaming.model}
-          mode={streaming.mode}
+          agentState={streaming.agentState}
           streaming
         />
       )}

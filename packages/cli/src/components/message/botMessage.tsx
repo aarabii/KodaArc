@@ -1,4 +1,4 @@
-import { Mode } from "@koda-arc/database/enums";
+import { AgentState } from "@koda-arc/database/enums";
 import { useTheme } from "../../hooks";
 import type { ClientMessagePart } from "../../hooks/useChats";
 import { TextAttributes } from "@opentui/core";
@@ -6,7 +6,7 @@ import { TextAttributes } from "@opentui/core";
 type Props = {
   parts: ClientMessagePart[];
   model: string;
-  mode: Mode;
+  agentState: AgentState;
   duration?: string;
   streaming?: boolean;
   interrupted?: boolean;
@@ -15,7 +15,7 @@ type Props = {
 export function BotMessage({
   parts,
   model,
-  mode,
+  agentState,
   duration,
   streaming = false,
   interrupted = false,
@@ -41,7 +41,7 @@ export function BotMessage({
             fg={
               interrupted
                 ? undefined
-                : mode === Mode.PLAN
+                : agentState === AgentState.PLAN
                   ? colors.agent.plan
                   : colors.agent.idle
             }
@@ -51,7 +51,7 @@ export function BotMessage({
 
           <box flexDirection="row" gap={1}>
             <text attributes={interrupted ? TextAttributes.DIM : 0}>
-              {mode === Mode.PLAN ? "Plan" : "Build"}
+              {agentState === AgentState.PLAN ? "Plan" : "Build"}
             </text>
 
             <text attributes={TextAttributes.DIM} fg={colors.text.muted}>

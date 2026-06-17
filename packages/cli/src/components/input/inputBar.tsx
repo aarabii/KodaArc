@@ -15,7 +15,7 @@ import {
   useCommandMenu,
   usePromptConfig,
 } from "../../hooks";
-import { Mode } from "@koda-arc/database/enums";
+import { AgentState } from "@koda-arc/database/enums";
 
 type InputBarProps = {
   onSubmit: (text: string) => void;
@@ -43,7 +43,7 @@ export const TEXT_AREA_KEY_BINDINGS: KeyBinding[] = [
 ];
 
 export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
-  const { mode, toggleMode, setMode, setModel } = usePromptConfig();
+  const { agentState, toggleAgentState, setAgentState, setModel } = usePromptConfig();
   const { colors } = useTheme();
   const placeholderTxt =
     placeholderValues[Math.floor(Math.random() * placeholderValues.length)];
@@ -106,15 +106,15 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
           toast,
           dialog,
           nav,
-          mode,
-          setMode,
+          agentState,
+          setAgentState,
           setModel,
         });
       } else {
         txtarea.insertText(command.value + " ");
       }
     },
-    [renderer, toast, dialog, nav, mode, setMode, setModel],
+    [renderer, toast, dialog, nav, agentState, setAgentState, setModel],
   );
 
   useEffect(() => {
@@ -146,7 +146,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
 
     if (key.name == "tab") {
       key.preventDefault();
-      toggleMode();
+      toggleAgentState();
     }
   });
 
@@ -171,7 +171,9 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
       <box
         border={["left"]}
         borderColor={
-          mode == Mode.BUILD ? colors.agent.executing : colors.agent.plan
+          agentState == AgentState.BUILD
+            ? colors.agent.executing
+            : colors.agent.plan
         }
         width="100%"
         customBorderChars={{

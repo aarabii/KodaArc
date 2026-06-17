@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/hono/bun";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { db } from "@koda-arc/database/client";
-import { Role, Mode, MessageStatus } from "@koda-arc/database/enums";
+import { Role, AgentState, MessageStatus } from "@koda-arc/database/enums";
 import { findSupportedChatModelById } from "@koda-arc/shared";
 
 const createSessionSchema = z.object({
@@ -13,7 +13,7 @@ const createSessionSchema = z.object({
     .object({
       role: z.enum(Role),
       content: z.string(),
-      mode: z.enum(Mode),
+      agentState: z.enum(AgentState),
       model: z
         .string()
         .refine((id) => !!findSupportedChatModelById(id), "unsupported model"),

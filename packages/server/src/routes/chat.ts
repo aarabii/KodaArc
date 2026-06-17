@@ -4,13 +4,13 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { streamText as aiStreamText } from "ai";
 import { db } from "@koda-arc/database/client";
-import { Mode, MessageStatus } from "@koda-arc/database/enums";
+import { AgentState, MessageStatus } from "@koda-arc/database/enums";
 import { type ChatStreamEvent } from "@koda-arc/shared";
 import { isSupportedModel, resolveChatModel } from "../lib/models";
 
 const submitSchema = z.object({
   content: z.string(),
-  mode: z.enum(Mode),
+  agentState: z.enum(AgentState),
   model: z.string().refine(isSupportedModel, "Unsupported model"),
 });
 
@@ -45,7 +45,7 @@ function getResumableUserMessage(
   messages: {
     role: "USER" | "ASSISTANT" | "ERROR";
     model: string;
-    mode: Mode;
+    agentState: AgentState;
   }[],
 ) {
   const lastMessage = messages[messages.length - 1];
@@ -60,7 +60,7 @@ type StreamParams = {
   sessionId: string;
   model: string;
   history: { role: "user" | "assistant"; content: string }[];
-  mode: Mode;
+  agentState: AgentState;
   abortController: AbortController;
 };
 
@@ -68,7 +68,7 @@ async function streamAIResponse(
   stream: Parameters<Parameters<typeof streamSSE>[1]>[0],
   params: StreamParams,
 ) {
-  const { sessionId, model, history, mode, abortController } = params;
+  const { sessionId, model, history, agentState, abortController } = params;
   const startTime = Date.now();
   const resolvedModel = resolveChatModel(model);
   let fullText = "";
@@ -85,7 +85,7 @@ async function streamAIResponse(
         status: MessageStatus.INTERUPTED,
         model,
         content: fullText,
-        mode,
+        agentState,
         duration: Math.round(elapsedMs / 1000),
       },
     });
@@ -129,7 +129,7 @@ async function streamAIResponse(
         status: MessageStatus.COMPLETE,
         model,
         content: fullText,
-        mode,
+        agentState,
         duration: Math.round(elapsedMs / 1000),
       },
     });
@@ -156,7 +156,7 @@ async function streamAIResponse(
         status: MessageStatus.COMPLETE,
         model,
         content: message,
-        mode,
+        agentState,
       },
     });
 
@@ -222,7 +222,7 @@ const app = new Hono()
               sessionId,
               model: resumableMessage.model,
               history,
-              mode: resumableMessage.mode,
+              agentState: resumableMessage.agentState,
               abortController,
             });
           } finally {
@@ -265,7 +265,7 @@ const app = new Hono()
         status: MessageStatus.COMPLETE,
         model: data.model,
         content: data.content,
-        mode: data.mode,
+        agentState: data.agentState,
       },
     });
 
@@ -291,7 +291,7 @@ const app = new Hono()
           sessionId,
           model: data.model,
           history,
-          mode: data.mode,
+          agentState: data.agentState,
           abortController,
         });
       },

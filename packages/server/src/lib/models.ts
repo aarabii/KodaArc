@@ -76,7 +76,7 @@ export function resolveChatModel(modelId: string): ResolveModel {
   const model = findSupportedChatModelById(modelId);
 
   if (!model) {
-    throw new Error(`Unsupported mode: ${modelId}`);
+    throw new Error(`Unsupported model: ${modelId}`);
   }
 
   return resolveSupportedChatModel(model);

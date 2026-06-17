@@ -1,5 +1,5 @@
 import type { ReactNode, Dispatch, SetStateAction } from "react";
-import type { Mode } from "@koda-arc/database/enums";
+import type { AgentState } from "@koda-arc/database/enums";
 import type { SupportedChatModelId } from "@koda-arc/shared";
 import type { ThemeColorProps, ThemeProps } from "../themes";
 
@@ -50,9 +50,9 @@ export type KeyboardLayerContextvalue = {
 
 // --- Prompt Config Types ---
 export type PromptConfigContextValue = {
-  mode: Mode;
-  toggleMode: () => void;
-  setMode: Dispatch<SetStateAction<Mode>>;
+  agentState: AgentState;
+  toggleAgentState: () => void;
+  setAgentState: Dispatch<SetStateAction<AgentState>>;
   model: SupportedChatModelId;
   setModel: Dispatch<SetStateAction<SupportedChatModelId>>;
 };

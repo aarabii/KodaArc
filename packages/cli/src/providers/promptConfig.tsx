@@ -4,7 +4,7 @@ import {
   DEFAULT_CHAT_MODEL_ID,
   type SupportedChatModelId,
 } from "@koda-arc/shared";
-import { Mode } from "@koda-arc/database/enums";
+import { AgentState } from "@koda-arc/database/enums";
 import { PromptConfigContext } from "./context";
 
 type PromptConfigProviderProps = {
@@ -12,21 +12,21 @@ type PromptConfigProviderProps = {
 };
 
 export function PromptConfigProvider({ children }: PromptConfigProviderProps) {
-  const [mode, setMode] = useState<Mode>(Mode.BUILD);
+  const [agentState, setAgentState] = useState<AgentState>(AgentState.BUILD);
   const [model, setModel] = useState<SupportedChatModelId>(
     DEFAULT_CHAT_MODEL_ID,
   );
 
-  const toggleMode = useCallback(() => {
-    setMode((m) => (m === Mode.BUILD ? Mode.PLAN : Mode.BUILD));
+  const toggleAgentState = useCallback(() => {
+    setAgentState((m) => (m === AgentState.BUILD ? AgentState.PLAN : AgentState.BUILD));
   }, []);
 
   return (
     <PromptConfigContext.Provider
       value={{
-        mode,
-        toggleMode,
-        setMode,
+        agentState,
+        toggleAgentState,
+        setAgentState,
         model,
         setModel,
       }}

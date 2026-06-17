@@ -1,14 +1,17 @@
-import type { Mode } from "@koda-arc/database/enums";
+import type { AgentState } from "@koda-arc/database/enums";
 import type { SupportedChatModelId } from "@koda-arc/shared";
-import type { DialogContextValue, ToastContextValue } from "../../providers/types";
+import type {
+  DialogContextValue,
+  ToastContextValue,
+} from "../../providers/types";
 
 export type CommandContext = {
   exit: () => void;
   toast: ToastContextValue;
   dialog: DialogContextValue;
   nav: (path: string) => void;
-  mode: Mode;
-  setMode: (mode: Mode) => void;
+  agentState: AgentState;
+  setAgentState: (agentState: AgentState) => void;
   setModel: (model: SupportedChatModelId) => void;
 };
 

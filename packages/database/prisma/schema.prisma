@@ -18,7 +18,7 @@ enum Role {
   ERROR
 }
 
-enum Mode {
+enum AgentState {
   BUILD
   PLAN
 }
@@ -36,7 +36,7 @@ model Message {
   content String
   parts Json?
   model String
-  mode Mode
+  agentState AgentState
   duration Int?
   createdAt DateTime @default(now())
   session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)

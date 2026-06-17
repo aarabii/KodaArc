@@ -19,7 +19,7 @@ export function SessionShell({
   interruptible = false,
 }: Props) {
   const { colors } = useTheme();
-  const { mode } = usePromptConfig();
+  const { agentState } = usePromptConfig();
 
   return (
     <box
@@ -49,7 +49,7 @@ export function SessionShell({
         <box flexDirection="row" alignItems="center" gap={2}>
           {loading ? (
             <>
-              <Spinner mode={mode} />
+              <Spinner agentState={agentState} />
               {interruptible ? (
                 <text>
                   Press <strong>ESC</strong> to interrrupt

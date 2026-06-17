@@ -44,7 +44,7 @@ export function NewSession() {
             initialMessage: {
               role: "USER",
               content: state.message,
-              mode: "BUILD",
+              agentState: "BUILD",
               model: DEFAULT_CHAT_MODEL_ID,
             },
           },
