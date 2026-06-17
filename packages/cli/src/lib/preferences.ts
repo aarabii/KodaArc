@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import type { ThemeProps } from "../providers/types";
+import type { ThemeProps } from "../themes";
 import { THEME, DEFAULT_THEME } from "../themes";
 
 const CONFIG_DIR = join(homedir(), ".koda-arc");

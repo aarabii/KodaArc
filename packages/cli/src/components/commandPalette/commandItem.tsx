@@ -5,10 +5,10 @@ import {
   SessionDialog,
   AgentDialogContent,
   ModelDialogContent,
+  HelpDialogContent,
 } from "../../dialogs";
 import { useTheme } from "../../hooks";
-import type { CommandType } from "../../providers/types";
-import { HelpDialogContent } from "./help";
+import type { CommandType } from "./types";
 import { SUPPORTED_CHAT_MODELS } from "@koda-arc/shared";
 
 type DialogTextVariant = "primary" | "muted" | "success" | "brand";

@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { TextAttributes } from "@opentui/core";
-import { useTheme } from "../../../hooks";
-import { SearchList } from "../../common";
+import { useTheme } from "../hooks";
+import { SearchList } from "../components/common";
 import { FAQ_ITEMS, type FaqItem } from "./faqData";
 
 export function HelpDialogContent() {
   const { colors } = useTheme();
-  const [activeFaq, setActiveFaq] = useState<FaqItem | null>(FAQ_ITEMS[0] || null);
+  const [activeFaq, setActiveFaq] = useState<FaqItem | null>(
+    FAQ_ITEMS[0] || null,
+  );
 
   return (
     <box flexDirection="column" gap={1}>
@@ -48,13 +50,13 @@ export function HelpDialogContent() {
           <text attributes={TextAttributes.BOLD} fg={colors.brand.accent}>
             {activeFaq.question}
           </text>
-          <text fg={colors.text.secondary}>
-            {activeFaq.answer}
-          </text>
+          <text fg={colors.text.secondary}>{activeFaq.answer}</text>
         </box>
       ) : (
         <box height={2} justifyContent="center" alignItems="center">
-          <text fg={colors.text.muted}>Select a question to view the answer.</text>
+          <text fg={colors.text.muted}>
+            Select a question to view the answer.
+          </text>
         </box>
       )}
     </box>

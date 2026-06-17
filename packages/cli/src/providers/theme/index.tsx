@@ -1,5 +1,5 @@
 import { useState, useCallback, type ReactNode } from "react";
-import type { ThemeProps } from "../types";
+import type { ThemeProps } from "../../themes";
 import { ThemeContext } from "../context";
 import {
   getInitialTheme,
