@@ -40,19 +40,7 @@ export const COMMANDS: CommandType[] = [
     desc: "Clear context and start a fresh conversation",
     value: "/new",
     action: (ctx) => {
-      ctx.dialog.open({
-        title: "Start New Conversation",
-        children: (
-          <box flexDirection="column" gap={1}>
-            <DialogText variant="primary">
-              This will clear your current context and message history.
-            </DialogText>
-            <DialogText variant="muted">
-              This action cannot be undone.
-            </DialogText>
-          </box>
-        ),
-      });
+      ctx.nav("/");
     },
   },
   {

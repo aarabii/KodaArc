@@ -5,8 +5,15 @@ import type { KeyBinding } from "@opentui/core";
 import { EmptyBorder } from "../common";
 import { StatusBar } from "../feedback";
 import { CommandMenu } from "../commandPalette";
+import { useNavigate } from "react-router";
 import type { CommandType } from "../../types";
-import { useToast, useDialog, useKeyboardLayer, useTheme, useCommandMenu } from "../../hooks";
+import {
+  useToast,
+  useDialog,
+  useKeyboardLayer,
+  useTheme,
+  useCommandMenu,
+} from "../../hooks";
 
 type InputBarProps = {
   onSubmit: (text: string) => void;
@@ -43,6 +50,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
   const renderer = useRenderer();
   const toast = useToast();
   const dialog = useDialog();
+  const nav = useNavigate();
   const { isTopLayer, setResponder } = useKeyboardLayer();
 
   const {
@@ -94,12 +102,13 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
           exit: () => renderer.destroy(),
           toast,
           dialog,
+          nav,
         });
       } else {
         txtarea.insertText(command.value + " ");
       }
     },
-    [renderer, toast],
+    [renderer, toast, dialog, nav],
   );
 
   useEffect(() => {

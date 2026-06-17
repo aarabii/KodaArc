@@ -5,6 +5,7 @@ export type CommandContext = {
   exit: () => void;
   toast: ToastContextValue;
   dialog: DialogContextValue;
+  nav: (path: string) => void;
 };
 
 export type CommandType = {
