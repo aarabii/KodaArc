@@ -139,7 +139,7 @@ export function useChats(sessionId: string, initialMessages: Message[]) {
         .body!.pipeThrough(new TextDecoderStream())
         .pipeThrough(new EventSourceParserStream());
 
-      for await (const { data } of stream) {
+      for await (const { data } of stream as unknown as AsyncIterable<{ data: string }>) {
         if (!isActiveRequest(activeStream.requestId)) return;
 
         let event;
