@@ -4,6 +4,7 @@ import {
   DialogProvider,
   KeyboardLayerProvider,
   ThemeProvider,
+  PromptConfigProvider,
 } from "../providers";
 import { ThemedRoot } from "./themedRoot";
 
@@ -13,9 +14,11 @@ export function RootLayout() {
       <ToastProvider>
         <KeyboardLayerProvider>
           <DialogProvider>
-            <ThemedRoot>
-              <Outlet />
-            </ThemedRoot>
+            <PromptConfigProvider>
+              <ThemedRoot>
+                <Outlet />
+              </ThemedRoot>
+            </PromptConfigProvider>
           </DialogProvider>
         </KeyboardLayerProvider>
       </ToastProvider>

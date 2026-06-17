@@ -138,6 +138,9 @@ export type CommandContext = {
   toast: ToastContextValue;
   dialog: DialogContextValue;
   nav: (path: string) => void;
+  mode: Mode;
+  setMode: (mode: Mode) => void;
+  setModel: (model: SupportedChatModelId) => void;
 };
 
 export type CommandType = {

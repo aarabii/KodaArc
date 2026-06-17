@@ -1,6 +1,6 @@
 import { TextAttributes } from "@opentui/core";
 import type { ReactNode } from "react";
-import { useTheme } from "../hooks";
+import { usePromptConfig, useTheme } from "../hooks";
 import { InputBar, Spinner } from "../components";
 
 type Props = {
@@ -19,6 +19,7 @@ export function SessionShell({
   interruptible = false,
 }: Props) {
   const { colors } = useTheme();
+  const { mode } = usePromptConfig();
 
   return (
     <box
@@ -48,7 +49,7 @@ export function SessionShell({
         <box flexDirection="row" alignItems="center" gap={2}>
           {loading ? (
             <>
-              <Spinner />
+              <Spinner mode={mode} />
               {interruptible ? (
                 <text>
                   Press <strong>ESC</strong> to interrrupt

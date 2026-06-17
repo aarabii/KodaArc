@@ -3,10 +3,13 @@ import {
   ThemeDialogContent,
   SpinnerDialogContent,
   SessionDialog,
+  AgentDialogContent,
+  ModelDialogContent,
 } from "../../dialogs";
 import { useTheme } from "../../hooks";
 import type { CommandType } from "../../providers/types";
 import { HelpDialogContent } from "./help";
+import { SUPPORTED_CHAT_MODELS } from "@koda-arc/shared";
 
 type DialogTextVariant = "primary" | "muted" | "success" | "brand";
 
@@ -62,28 +65,10 @@ export const COMMANDS: CommandType[] = [
       ctx.dialog.open({
         title: "Select Agent",
         children: (
-          <box flexDirection="column" gap={1}>
-            <DialogText variant="primary">
-              Choose an agent for your session:
-            </DialogText>
-            <box flexDirection="column" gap={1} paddingTop={1}>
-              <DialogText variant="success">
-                › Code General coding assistant
-              </DialogText>
-              <DialogText variant="primary">
-                {" "}
-                Debug Root cause and fix errors
-              </DialogText>
-              <DialogText variant="primary">
-                {" "}
-                Architect System design and planning
-              </DialogText>
-              <DialogText variant="primary">
-                {" "}
-                Review Code review and feedback
-              </DialogText>
-            </box>
-          </box>
+          <AgentDialogContent
+            currentMode={ctx.mode}
+            onSelectMode={ctx.setMode}
+          />
         ),
       });
     },
@@ -96,24 +81,10 @@ export const COMMANDS: CommandType[] = [
       ctx.dialog.open({
         title: "Select Model",
         children: (
-          <box flexDirection="column" gap={1}>
-            <DialogText variant="primary">
-              Choose the model for generation:
-            </DialogText>
-            <box flexDirection="column" gap={1} paddingTop={1}>
-              <DialogText variant="success">
-                › claude-sonnet-4 Recommended
-              </DialogText>
-              <DialogText variant="primary">
-                {" "}
-                claude-opus-4 Most capable
-              </DialogText>
-              <DialogText variant="primary"> claude-haiku-4 Fastest</DialogText>
-            </box>
-            <DialogText variant="muted" paddingTop={1}>
-              Current model will apply to new messages only.
-            </DialogText>
-          </box>
+          <ModelDialogContent
+            models={SUPPORTED_CHAT_MODELS.map((model) => model.id)}
+            onSelectModel={ctx.setModel}
+          />
         ),
       });
     },

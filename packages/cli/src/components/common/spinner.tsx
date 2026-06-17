@@ -1,6 +1,6 @@
 import "opentui-spinner/react";
-import { useState } from "react";
 import { useTheme } from "../../hooks";
+import { Mode } from "@koda-arc/database/enums";
 
 export const SPINNER_NAMES = [
   "dots",
@@ -95,8 +95,16 @@ export const SPINNER_NAMES = [
   "fish",
 ];
 
-export function Spinner() {
-  const { colors, currentSpinner } = useTheme();
+type Props = {
+  mode?: Mode;
+};
 
-  return <spinner name={(currentSpinner || "arc") as any} color={colors.agent.thinking} />;
+export function Spinner({ mode = Mode.BUILD }: Props) {
+  const { colors, currentSpinner } = useTheme();
+  const activeColor =
+    mode === Mode.PLAN ? colors.agent.plan : colors.agent.idle;
+
+  return (
+    <spinner name={(currentSpinner || "arc") as any} color={activeColor} />
+  );
 }

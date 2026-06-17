@@ -1,6 +1,6 @@
 import { useRef, useCallback, useEffect } from "react";
 import type { TextareaRenderable } from "@opentui/core";
-import { useRenderer } from "@opentui/react";
+import { useRenderer, useKeyboard } from "@opentui/react";
 import type { KeyBinding } from "@opentui/core";
 import { EmptyBorder } from "../common";
 import { StatusBar } from "../feedback";
@@ -13,7 +13,9 @@ import {
   useKeyboardLayer,
   useTheme,
   useCommandMenu,
+  usePromptConfig,
 } from "../../hooks";
+import { Mode } from "@koda-arc/database/enums";
 
 type InputBarProps = {
   onSubmit: (text: string) => void;
@@ -41,6 +43,7 @@ export const TEXT_AREA_KEY_BINDINGS: KeyBinding[] = [
 ];
 
 export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
+  const { mode, toggleMode, setMode, setModel } = usePromptConfig();
   const { colors } = useTheme();
   const placeholderTxt =
     placeholderValues[Math.floor(Math.random() * placeholderValues.length)];
@@ -103,12 +106,15 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
           toast,
           dialog,
           nav,
+          mode,
+          setMode,
+          setModel,
         });
       } else {
         txtarea.insertText(command.value + " ");
       }
     },
-    [renderer, toast, dialog, nav],
+    [renderer, toast, dialog, nav, mode, setMode, setModel],
   );
 
   useEffect(() => {
@@ -134,6 +140,16 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
     handleSubmit();
   };
 
+  useKeyboard((key) => {
+    if (disabled) return;
+    if (!isTopLayer("base")) return;
+
+    if (key.name == "tab") {
+      key.preventDefault();
+      toggleMode();
+    }
+  });
+
   useEffect(() => {
     setResponder("base", () => {
       if (disabled) return false;
@@ -154,7 +170,9 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
     <box width="100%" alignItems="center">
       <box
         border={["left"]}
-        borderColor={colors.brand.primary}
+        borderColor={
+          mode == Mode.BUILD ? colors.agent.executing : colors.agent.plan
+        }
         width="100%"
         customBorderChars={{
           ...EmptyBorder,
