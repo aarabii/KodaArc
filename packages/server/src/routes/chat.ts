@@ -2,11 +2,17 @@ import { Hono } from "hono";
 import { streamSSE } from "hono/streaming";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { streamText as aiStreamText } from "ai";
+import { streamText as aiStreamText, stepCountIs } from "ai";
 import { db } from "@koda-arc/database/client";
 import { AgentState, MessageStatus } from "@koda-arc/database/enums";
-import { type ChatStreamEvent } from "@koda-arc/shared";
+import {
+  type ChatStreamEvent,
+  type MessagePart,
+  toolCallArgsSchema,
+  messagePartSchema,
+} from "@koda-arc/shared";
 import { isSupportedModel, resolveChatModel } from "../lib/models";
+import type { Prisma } from "@koda-arc/database";
 
 const submitSchema = z.object({
   content: z.string(),
@@ -70,13 +76,21 @@ async function streamAIResponse(
 ) {
   const { sessionId, model, history, agentState, abortController } = params;
   const startTime = Date.now();
+  const parts: MessagePart[] = [];
   const resolvedModel = resolveChatModel(model);
-  let fullText = "";
 
   const persistInterruptedMessage = async () => {
-    if (fullText.length === 0) return;
+    const fullText = parts
+      .filter((p) => p.type === "text")
+      .map((p) => p.text)
+      .join("");
+
+    if (fullText.length === 0 && parts.length === 0) return;
 
     const elapsedMs = Date.now() - startTime;
+
+    const validParts: Prisma.InputJsonValue | undefined =
+      parts.length > 0 ? messagePartSchema.parse(parts) : undefined;
 
     await db.message.create({
       data: {
@@ -85,6 +99,7 @@ async function streamAIResponse(
         status: MessageStatus.INTERUPTED,
         model,
         content: fullText,
+        parts: validParts,
         agentState,
         duration: Math.round(elapsedMs / 1000),
       },
@@ -96,10 +111,28 @@ async function streamAIResponse(
       model: resolvedModel.model,
       messages: history,
       abortSignal: abortController.signal,
+      providerOptions: resolvedModel.providerOption,
     });
 
     for await (const part of result.fullStream) {
       if (stream.aborted) break;
+
+      if (part.type === "reasoning-delta") {
+        const last = parts[parts.length - 1];
+        if (last && last.type === "reasoning") {
+          last.text += part.text;
+        } else {
+          parts.push({
+            type: "reasoning",
+            text: part.text,
+          });
+        }
+
+        const event: ChatStreamEvent = {
+          type: "reasoning-delta",
+          text: part.text,
+        };
+      }
 
       if (part.type === "text-delta") {
         fullText += part.text;
