@@ -5,14 +5,16 @@ import { z } from "zod";
 import { streamText as aiStreamText, stepCountIs } from "ai";
 import { db } from "@koda-arc/database/client";
 import { AgentState, MessageStatus } from "@koda-arc/database/enums";
+import type { Prisma } from "@koda-arc/database";
 import {
   type ChatStreamEvent,
   type MessagePart,
   toolCallArgsSchema,
-  messagePartSchema,
+  messagePartsSchema,
 } from "@koda-arc/shared";
+import { createTools } from "../tools";
+import { buildSystemPrompt } from "../system-prompt";
 import { isSupportedModel, resolveChatModel } from "../lib/models";
-import type { Prisma } from "@koda-arc/database";
 
 const submitSchema = z.object({
   content: z.string(),
@@ -65,6 +67,7 @@ function getResumableUserMessage(
 type StreamParams = {
   sessionId: string;
   model: string;
+  cwd: string | null;
   history: { role: "user" | "assistant"; content: string }[];
   agentState: AgentState;
   abortController: AbortController;
@@ -74,8 +77,10 @@ async function streamAIResponse(
   stream: Parameters<Parameters<typeof streamSSE>[1]>[0],
   params: StreamParams,
 ) {
-  const { sessionId, model, history, agentState, abortController } = params;
+  const { sessionId, model, cwd, history, agentState, abortController } =
+    params;
   const startTime = Date.now();
+  const tools = cwd ? createTools(cwd, agentState) : undefined;
   const parts: MessagePart[] = [];
   const resolvedModel = resolveChatModel(model);
 
@@ -85,12 +90,13 @@ async function streamAIResponse(
       .map((p) => p.text)
       .join("");
 
-    if (fullText.length === 0 && parts.length === 0) return;
+    if (fullText.length === 0 && parts.length === 0) {
+      return;
+    }
 
     const elapsedMs = Date.now() - startTime;
-
-    const validParts: Prisma.InputJsonValue | undefined =
-      parts.length > 0 ? messagePartSchema.parse(parts) : undefined;
+    const validatedParts: Prisma.InputJsonValue | undefined =
+      parts.length > 0 ? messagePartsSchema.parse(parts) : undefined;
 
     await db.message.create({
       data: {
@@ -99,7 +105,7 @@ async function streamAIResponse(
         status: MessageStatus.INTERUPTED,
         model,
         content: fullText,
-        parts: validParts,
+        parts: validatedParts,
         agentState,
         duration: Math.round(elapsedMs / 1000),
       },
@@ -109,9 +115,12 @@ async function streamAIResponse(
   try {
     const result = aiStreamText({
       model: resolvedModel.model,
+      system: buildSystemPrompt({ cwd, agentState }),
       messages: history,
+      tools,
+      stopWhen: tools ? stepCountIs(50) : undefined,
       abortSignal: abortController.signal,
-      providerOptions: resolvedModel.providerOption,
+      providerOptions: resolvedModel.providerOptions,
     });
 
     for await (const part of result.fullStream) {
@@ -122,23 +131,78 @@ async function streamAIResponse(
         if (last && last.type === "reasoning") {
           last.text += part.text;
         } else {
-          parts.push({
-            type: "reasoning",
-            text: part.text,
-          });
+          parts.push({ type: "reasoning", text: part.text });
         }
-
         const event: ChatStreamEvent = {
           type: "reasoning-delta",
           text: part.text,
         };
+        await stream.writeSSE({
+          event: "reasoning-delta",
+          data: JSON.stringify(event),
+        });
       }
 
       if (part.type === "text-delta") {
-        fullText += part.text;
+        const last = parts[parts.length - 1];
+        if (last && last.type === "text") {
+          last.text += part.text;
+        } else {
+          parts.push({ type: "text", text: part.text });
+        }
+
         const event: ChatStreamEvent = { type: "text-delta", text: part.text };
         await stream.writeSSE({
           event: "text-delta",
+          data: JSON.stringify(event),
+        });
+      }
+
+      if (part.type === "tool-call") {
+        const args = toolCallArgsSchema.parse(part.input);
+
+        parts.push({
+          type: "tool_call",
+          id: part.toolCallId,
+          name: part.toolName,
+          args,
+        });
+
+        const event: ChatStreamEvent = {
+          type: "tool_call",
+          toolCallId: part.toolCallId,
+          toolName: part.toolName,
+          args,
+        };
+        await stream.writeSSE({
+          event: "tool_call",
+          data: JSON.stringify(event),
+        });
+      }
+
+      if (part.type === "tool-result") {
+        const resultStr =
+          typeof part.output === "string"
+            ? part.output
+            : JSON.stringify(part.output);
+
+        const tcPart = parts.find(
+          (p): p is Extract<MessagePart, { type: "tool_call" }> =>
+            p.type === "tool_call" && p.id === part.toolCallId,
+        );
+
+        if (tcPart) {
+          tcPart.result = resultStr;
+        }
+
+        const event: ChatStreamEvent = {
+          type: "tool_result",
+          toolCallId: part.toolCallId,
+          result: resultStr,
+        };
+
+        await stream.writeSSE({
+          event: "tool-result",
           data: JSON.stringify(event),
         });
       }
@@ -154,6 +218,13 @@ async function streamAIResponse(
     }
 
     const elapsedMs = Date.now() - startTime;
+    const fullText = parts
+      .filter((p) => p.type === "text")
+      .map((p) => p.text)
+      .join("");
+
+    const validatedParts: Prisma.InputJsonValue | undefined =
+      parts.length > 0 ? messagePartsSchema.parse(parts) : undefined;
 
     const assistantMessage = await db.message.create({
       data: {
@@ -162,6 +233,7 @@ async function streamAIResponse(
         status: MessageStatus.COMPLETE,
         model,
         content: fullText,
+        parts: validatedParts,
         agentState,
         duration: Math.round(elapsedMs / 1000),
       },
@@ -254,6 +326,7 @@ const app = new Hono()
             await streamAIResponse(stream, {
               sessionId,
               model: resumableMessage.model,
+              cwd: session.cwd,
               history,
               agentState: resumableMessage.agentState,
               abortController,
@@ -303,7 +376,7 @@ const app = new Hono()
     });
 
     const history = buildConversationHistory([
-      ...session.messages,
+      ...session.messages, // TODO: limit to last 10, 5 messages?
       {
         role: "USER" as const,
         content: data.content,
@@ -323,6 +396,7 @@ const app = new Hono()
         await streamAIResponse(stream, {
           sessionId,
           model: data.model,
+          cwd: session.cwd,
           history,
           agentState: data.agentState,
           abortController,

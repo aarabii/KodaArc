@@ -1,7 +1,7 @@
 import { anthropic } from "@ai-sdk/anthropic";
 import { openai } from "@ai-sdk/openai";
 import { google } from "@ai-sdk/google";
-
+import type { ProviderOptions } from "@ai-sdk/provider-utils";
 import {
   findSupportedChatModelById,
   type SupportedChatModel,
@@ -9,18 +9,22 @@ import {
   type SupportedProvider,
 } from "@koda-arc/shared";
 import type { LanguageModel } from "ai";
-
-type AnthropicModelId = Extract<
-  SupportedChatModel,
-  { provider: "anthropic" }
->["id"];
-type OpenAIModelId = Extract<SupportedChatModel, { provider: "openai" }>["id"];
-type GoogleModelId = Extract<SupportedChatModel, { provider: "google" }>["id"];
+import type {
+  AnthropicModelId,
+  OpenAIModelId,
+  GoogleModelId,
+} from "./type.modelId";
+import {
+  ANTHROPIC_PROVIDER_OPTIONS,
+  GOOGLE_PROVIDER_OPTIONS,
+  OPEN_AI_PROVIDER_OPTIONS,
+} from "./providerOptions";
 
 export type ResolveModel = {
   model: LanguageModel;
   provider: SupportedProvider;
   modelID: SupportedChatModelId;
+  providerOptions?: ProviderOptions;
 };
 
 function assertUnsupportedProvider(provider: never): never {
@@ -32,6 +36,7 @@ function resolveAnthropicModel(modelID: AnthropicModelId): ResolveModel {
     model: anthropic(modelID),
     provider: "anthropic",
     modelID,
+    providerOptions: ANTHROPIC_PROVIDER_OPTIONS[modelID],
   };
 }
 
@@ -40,6 +45,7 @@ function resolveOpenAIModel(modelID: OpenAIModelId): ResolveModel {
     model: openai(modelID),
     provider: "openai",
     modelID,
+    providerOptions: OPEN_AI_PROVIDER_OPTIONS[modelID],
   };
 }
 
@@ -48,6 +54,7 @@ function resolveGoogleModel(modelID: GoogleModelId): ResolveModel {
     model: google(modelID),
     provider: "google",
     modelID,
+    providerOptions: GOOGLE_PROVIDER_OPTIONS[modelID],
   };
 }
 
