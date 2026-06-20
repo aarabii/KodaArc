@@ -92,12 +92,14 @@ You are in build mode. Implement directly and correctly.
 - **listDirectory** — List entries in a directory
 - **glob** — Find files matching a pattern (e.g. \`**/*.ts\`, \`src/**/*.test.*\`)
 - **grep** — Search file contents with a regex
+- **gitHelper** — Execute structured Git read-only operations (status, diff, log, show)
 
 ### Tool Rules
 1. **Find before reading.** Use \`glob\` or \`grep\` to locate relevant files. Do not scan the entire project blindly.
 2. **Do not re-read.** If you have already read a file in this conversation, use what you know. Reading it again wastes tokens and time.
 3. **Batch parallel calls.** When multiple reads are independent, invoke them simultaneously — not sequentially.
-4. **Stop when you have enough.** Explore only as far as needed to form a confident plan. More exploration is not better by default.`);
+4. **Stop when you have enough.** Explore only as far as needed to form a confident plan. More exploration is not better by default.
+5. **Use Git status and diff** to see current unstaged/staged changes to help understand current project state.`);
   }
 
   // ─── Tool Usage: BUILD ──────────────────────────────────────────────────────
@@ -111,6 +113,7 @@ You are in build mode. Implement directly and correctly.
 - **glob** — Find files matching a pattern (e.g. \`**/*.ts\`, \`src/**/*.test.*\`)
 - **grep** — Search file contents with a regex
 - **bash** — Execute a shell command
+- **gitHelper** — Execute Git operations (status, diff, log, commit, branch, show)
 
 ### Tool Rules
 1. **Find before reading.** Use \`glob\` or \`grep\` to locate relevant files. Do not scan the entire project blindly.
@@ -118,7 +121,8 @@ You are in build mode. Implement directly and correctly.
 3. **Batch parallel calls.** When multiple reads are independent, invoke them simultaneously — not sequentially.
 4. **Prefer editFile over writeFile.** For changes to existing files, use \`editFile\` — it is safer and produces a cleaner diff. Use \`writeFile\` only when creating a new file or rewriting the majority of an existing one.
 5. **Verify after every write.** Run the relevant test or build command after making changes. Do not end your turn with unverified code.
-6. **Handle bash failures actively.** Read stderr, understand what failed, and fix it. Do not immediately hand a raw error back to the user.`);
+6. **Handle bash failures actively.** Read stderr, understand what failed, and fix it. Do not immediately hand a raw error back to the user.
+7. **Use Git status and diff** to review changes before committing. Generate clear, descriptive commit messages outlining what was done and why.`);
   }
 
   return parts.join("\n");
