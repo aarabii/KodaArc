@@ -6,6 +6,7 @@ import {
   AgentDialogContent,
   ModelDialogContent,
   HelpDialogContent,
+  ExitDialogContent,
 } from "../../dialogs";
 import { useTheme } from "../../hooks";
 import type { CommandType } from "./types";
@@ -182,16 +183,7 @@ export const COMMANDS: CommandType[] = [
     action: (ctx) => {
       ctx.dialog.open({
         title: "Quit KodaArc",
-        children: (
-          <box flexDirection="column" gap={1}>
-            <DialogText variant="primary">
-              Are you sure you want to exit?
-            </DialogText>
-            <DialogText variant="muted">
-              Your current session will be saved.
-            </DialogText>
-          </box>
-        ),
+        children: <ExitDialogContent onConfirm={ctx.exit} />,
       });
     },
   },

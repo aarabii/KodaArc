@@ -1,6 +1,7 @@
 import { useRef, useCallback, useEffect } from "react";
 import type { TextareaRenderable } from "@opentui/core";
-import { useRenderer, useKeyboard } from "@opentui/react";
+import { useRenderer, useKeyboard, usePaste } from "@opentui/react";
+import { decodePasteBytes } from "@opentui/core";
 import type { KeyBinding } from "@opentui/core";
 import { EmptyBorder } from "../common";
 import { StatusBar } from "../feedback";
@@ -8,6 +9,7 @@ import { CommandMenu } from "../commandPalette";
 import { useNavigate } from "react-router";
 import type { CommandType } from "../commandPalette/types";
 import {
+  useClipboard,
   useToast,
   useDialog,
   useKeyboardLayer,
@@ -36,14 +38,64 @@ const placeholderValues = [
 ];
 
 export const TEXT_AREA_KEY_BINDINGS: KeyBinding[] = [
+  // Submit / newline
   { name: "return", action: "submit" },
   { name: "enter", action: "submit" },
   { name: "return", shift: true, action: "newline" },
   { name: "enter", shift: true, action: "newline" },
+
+  // Undo / redo
+  { name: "z", ctrl: true, action: "undo" },
+  { name: "y", ctrl: true, action: "redo" },
+
+  // Select all
+  { name: "a", ctrl: true, action: "select-all" },
+
+  // Cursor movement
+  { name: "left", action: "move-left" },
+  { name: "right", action: "move-right" },
+  { name: "up", action: "move-up" },
+  { name: "down", action: "move-down" },
+
+  // Selection via shift+arrows
+  { name: "left", shift: true, action: "select-left" },
+  { name: "right", shift: true, action: "select-right" },
+  { name: "up", shift: true, action: "select-up" },
+  { name: "down", shift: true, action: "select-down" },
+
+  // Home / End
+  { name: "home", action: "line-home" },
+  { name: "end", action: "line-end" },
+  { name: "home", shift: true, action: "select-line-home" },
+  { name: "end", shift: true, action: "select-line-end" },
+
+  // Buffer home / end (Ctrl+Home / Ctrl+End)
+  { name: "home", ctrl: true, action: "buffer-home" },
+  { name: "end", ctrl: true, action: "buffer-end" },
+  { name: "home", ctrl: true, shift: true, action: "select-buffer-home" },
+  { name: "end", ctrl: true, shift: true, action: "select-buffer-end" },
+
+  // Word navigation (Ctrl+Left / Ctrl+Right)
+  { name: "right", ctrl: true, action: "word-forward" },
+  { name: "left", ctrl: true, action: "word-backward" },
+  { name: "right", ctrl: true, shift: true, action: "select-word-forward" },
+  { name: "left", ctrl: true, shift: true, action: "select-word-backward" },
+
+  // Delete operations
+  { name: "backspace", action: "backspace" },
+  { name: "delete", action: "delete" },
+  { name: "backspace", ctrl: true, action: "delete-word-backward" },
+  { name: "delete", ctrl: true, action: "delete-word-forward" },
+
+  // Line operations
+  { name: "k", ctrl: true, shift: true, action: "delete-line" },
+  { name: "k", ctrl: true, action: "delete-to-line-end" },
+  { name: "u", ctrl: true, action: "delete-to-line-start" },
 ];
 
 export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
   const { agentState, toggleAgentState, setAgentState, setModel } = usePromptConfig();
+  const { paste: getClipboardText } = useClipboard();
   const { colors } = useTheme();
   const placeholderTxt =
     placeholderValues[Math.floor(Math.random() * placeholderValues.length)];
@@ -147,6 +199,33 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
     if (key.name == "tab") {
       key.preventDefault();
       toggleAgentState();
+    }
+
+    // Ctrl+V: paste from internal clipboard into the textarea
+    if (key.ctrl && key.name === "v") {
+      key.preventDefault();
+      const txtarea = textareaRef.current;
+      if (!txtarea) return;
+
+      const clipboardText = getClipboardText();
+      if (clipboardText.length > 0) {
+        txtarea.insertText(clipboardText);
+      }
+    }
+  });
+
+  // Handle system bracketed paste events (terminal paste)
+  usePaste((event) => {
+    if (disabled) return;
+    if (!isTopLayer("base")) return;
+
+    const txtarea = textareaRef.current;
+    if (!txtarea) return;
+
+    const text = decodePasteBytes(event.bytes);
+    if (text.length > 0) {
+      event.preventDefault();
+      txtarea.insertText(text);
     }
   });
 

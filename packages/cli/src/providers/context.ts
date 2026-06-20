@@ -1,11 +1,14 @@
 import { createContext } from "react";
 import type {
+  ClipboardContextValue,
   DialogContextValue,
   KeyboardLayerContextvalue,
   PromptConfigContextValue,
   ThemeContextValue,
   ToastContextValue,
 } from "./types";
+
+export const ClipboardContext = createContext<ClipboardContextValue | null>(null);
 
 export const DialogContext = createContext<DialogContextValue | null>(null);
 

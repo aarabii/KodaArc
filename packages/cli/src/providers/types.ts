@@ -48,6 +48,12 @@ export type KeyboardLayerContextvalue = {
   setResponder: (id: string, responder: Responder | null) => void;
 };
 
+// --- Clipboard Types ---
+export type ClipboardContextValue = {
+  copy: (text: string) => void;
+  paste: () => string;
+};
+
 // --- Prompt Config Types ---
 export type PromptConfigContextValue = {
   agentState: AgentState;

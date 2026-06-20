@@ -53,7 +53,7 @@ export function KeyboardLayerProvider({
   );
 
   useKeyboard((key) => {
-    if (!key.ctrl || key.name !== "c") return;
+    if (!key.ctrl || key.name !== "W") return;
 
     const currentStack = stackRef.current;
 

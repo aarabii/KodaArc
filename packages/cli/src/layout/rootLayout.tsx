@@ -1,5 +1,6 @@
 import { Outlet } from "react-router";
 import {
+  ClipboardProvider,
   ToastProvider,
   DialogProvider,
   KeyboardLayerProvider,
@@ -13,13 +14,15 @@ export function RootLayout() {
     <ThemeProvider>
       <ToastProvider>
         <KeyboardLayerProvider>
-          <DialogProvider>
-            <PromptConfigProvider>
-              <ThemedRoot>
-                <Outlet />
-              </ThemedRoot>
-            </PromptConfigProvider>
-          </DialogProvider>
+          <ClipboardProvider>
+            <DialogProvider>
+              <PromptConfigProvider>
+                <ThemedRoot>
+                  <Outlet />
+                </ThemedRoot>
+              </PromptConfigProvider>
+            </DialogProvider>
+          </ClipboardProvider>
         </KeyboardLayerProvider>
       </ToastProvider>
     </ThemeProvider>
