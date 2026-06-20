@@ -5,15 +5,7 @@ import { getFilterCommands } from "../utils";
 import type { CommandType } from "../components/commandPalette/types";
 import { useKeyboardLayer } from "./useKeyboardLayer";
 
-type UseCommandMenuOptions = {
-  showCommandMenu: boolean;
-  commandQuery: string;
-  commandIdx: number;
-  scrollRef: RefObject<ScrollBoxRenderable | null>;
-  handleContentChange: (content: string) => void;
-  resolveCommand: (idx: number) => CommandType | null;
-  setSelectedCommandIdx: (idx: number) => void;
-};
+import type { UseCommandMenuOptions } from "./types/useCommandMenu.types";
 
 export function useCommandMenu(): UseCommandMenuOptions {
   const [txtValue, setTxtValue] = useState("");

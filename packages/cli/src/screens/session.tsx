@@ -1,21 +1,24 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useLocation, useNavigate } from "react-router";
 import { z } from "zod";
-import type { InferResponseType } from "hono/client";
 import { useKeyboard } from "@opentui/react";
 import prettyMs from "pretty-ms";
 import {
-  DEFAULT_CHAT_MODEL_ID,
+  messagePartsSchema,
   type SupportedChatModelId,
 } from "@koda-arc/shared";
-import { UserMessage, BotMessage, ErrorMessage } from "../components";
+import type { InferResponseType } from "hono/client";
 import { SessionShell } from "../layout";
-import { useToast } from "../hooks";
-import { apiClient, getErrorMessage } from "../lib";
-import { useChats } from "../hooks";
-import type { Message, ClientMessagePart } from "../hooks/useChats";
+import { UserMessage, BotMessage, ErrorMessage } from "../components/message";
+import {
+  useToast,
+  useChats,
+  usePromptConfig,
+  useKeyboardLayer,
+} from "../hooks";
+import type { Message, ClientMessagePart } from "../hooks/types";
+import { apiClient, getErrorMessage } from "../lib/";
 import { MessageStatus } from "@koda-arc/database/enums";
-import { useKeyboardLayer } from "../hooks";
 
 type SessionData = InferResponseType<
   (typeof apiClient.sessions)[":id"]["$get"],
@@ -33,6 +36,7 @@ function mapDbMessages(dbMessages: SessionData["messages"]): Message[] {
     if (m.role === "ERROR") {
       return { id: m.id, role: "error", content: m.content };
     }
+
     if (m.role === "USER") {
       return {
         id: m.id,
@@ -42,13 +46,22 @@ function mapDbMessages(dbMessages: SessionData["messages"]): Message[] {
         model: m.model as SupportedChatModelId,
       };
     }
+
+    const parsedParts =
+      m.parts == null ? null : messagePartsSchema.safeParse(m.parts);
+    const parts: ClientMessagePart[] = parsedParts?.success
+      ? parsedParts.data.map((p) =>
+          p.type === "tool_call" ? { ...p, status: "done" as const } : p,
+        )
+      : [];
+
     return {
       id: m.id,
       role: "assistant",
       content: m.content,
       model: m.model as SupportedChatModelId,
       agentState: m.agentState,
-      parts: [{ type: "text", text: m.content }],
+      parts,
       ...(m.duration != null ? { duration: prettyMs(m.duration * 1000) } : {}),
       interrupted: m.status === MessageStatus.INTERUPTED,
     };
@@ -56,8 +69,13 @@ function mapDbMessages(dbMessages: SessionData["messages"]): Message[] {
 }
 
 function ChatMessage({ msg }: { msg: Message }) {
-  if (msg.role === "user") return <UserMessage message={msg.content} />;
-  if (msg.role === "error") return <ErrorMessage message={msg.content} />;
+  if (msg.role === "user") {
+    return <UserMessage message={msg.content} agentState={msg.agentState} />;
+  }
+
+  if (msg.role === "error") {
+    return <ErrorMessage message={msg.content} />;
+  }
 
   return (
     <BotMessage
@@ -73,16 +91,17 @@ function ChatMessage({ msg }: { msg: Message }) {
 
 function SessionChat({ session }: { session: SessionData }) {
   const [initialMessages] = useState(() => mapDbMessages(session.messages));
+  const { agentState, model } = usePromptConfig();
   const { isTopLayer } = useKeyboardLayer();
   const { messages, streaming, submit, abort, interrupt } = useChats(
     session.id,
     initialMessages,
   );
-  // Stop the pending reply when the user leaves this session.
+
   useEffect(() => {
     return () => abort();
   }, [abort]);
-  // Let the user cancel a reply even before the first streamed chunk arrives.
+
   useKeyboard((key) => {
     if (
       key.name === "escape" &&
@@ -96,13 +115,11 @@ function SessionChat({ session }: { session: SessionData }) {
 
   return (
     <SessionShell
-      onSubmit={(text) =>
-        submit({ userText: text, agentState: "BUILD", model: DEFAULT_CHAT_MODEL_ID })
-      }
+      onSubmit={(text) => submit({ userText: text, agentState, model })}
       loading={streaming.status === "streaming"}
       interruptible={streaming.status === "streaming"}
     >
-      {messages.map((msg: Message) => (
+      {messages.map((msg) => (
         <ChatMessage key={msg.id} msg={msg} />
       ))}
       {streaming.status === "streaming" && streaming.parts.length > 0 && (
@@ -120,7 +137,7 @@ function SessionChat({ session }: { session: SessionData }) {
 export function Session() {
   const { id } = useParams();
   const location = useLocation();
-  const nav = useNavigate();
+  const navigate = useNavigate();
   const toast = useToast();
 
   const prefetched = useMemo(() => {
@@ -133,38 +150,36 @@ export function Session() {
   useEffect(() => {
     if (prefetched) return;
 
+    setSession(null);
+
     if (!id) return;
 
     let ignore = false;
-    const fetchedSession = async () => {
+    const fetchSession = async () => {
       try {
         const res = await apiClient.sessions[":id"].$get({
-          param: { id: id },
+          param: { id },
         });
-
         if (ignore) return;
-
         if (!res.ok) throw new Error(await getErrorMessage(res));
-
-        setSession(await res.json());
+        const resolved = await res.json();
+        setSession(resolved);
       } catch (err) {
         if (ignore) return;
-
         toast.show({
           variant: "error",
           message:
             err instanceof Error ? err.message : "Failed to load session",
         });
-
-        nav("/", { replace: true });
+        navigate("/", { replace: true });
       }
     };
 
-    fetchedSession();
+    fetchSession();
     return () => {
       ignore = true;
     };
-  }, [id, prefetched, toast, nav]);
+  }, [id, prefetched, toast, navigate]);
 
   if (!session) {
     return <SessionShell onSubmit={() => {}} inputDisabled loading />;

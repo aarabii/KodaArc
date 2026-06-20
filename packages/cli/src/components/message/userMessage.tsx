@@ -1,22 +1,39 @@
+import { AgentState } from "@koda-arc/database/enums";
+import { EmptyBorder } from "../common";
 import { useTheme } from "../../hooks";
 
 type Props = {
   message: string;
+  agentState: AgentState;
 };
 
-export function UserMessage({ message }: Props) {
+export function UserMessage({ message, agentState }: Props) {
   const { colors } = useTheme();
 
   return (
     <box width="100%" alignItems="center">
-      <box border={["left"]} width="100%" borderColor={colors.brand.primary}>
+      <box
+        border={["left"]}
+        borderColor={
+          agentState === AgentState.PLAN
+            ? colors.agent.plan
+            : colors.brand.primary
+        }
+        width="100%"
+        customBorderChars={{
+          ...EmptyBorder,
+          vertical: "┃",
+          bottomLeft: "╹",
+        }}
+      >
         <box
           justifyContent="center"
           paddingX={2}
           paddingY={1}
-          backgroundColor={colors.bg.input}
+          backgroundColor={colors.brand.accent}
+          width="100%"
         >
-          <text fg={colors.text.primary}>{message}</text>
+          <text>{message}</text>
         </box>
       </box>
     </box>

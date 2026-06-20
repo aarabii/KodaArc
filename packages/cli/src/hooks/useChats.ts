@@ -8,57 +8,18 @@ import {
   ChatStreamEventSchema,
   type SupportedChatModelId,
 } from "@koda-arc/shared";
-export type ClientMessagePart = { type: "text"; text: string };
 
-export type Message =
-  | {
-      id: string;
-      role: "user";
-      content: string;
-      agentState: AgentState;
-      model: SupportedChatModelId;
-    }
-  | {
-      id: string;
-      role: "assistant";
-      content: string;
-      agentState: AgentState;
-      model: SupportedChatModelId;
-      parts: ClientMessagePart[];
-      duration?: string;
-      interrupted?: boolean;
-    }
-  | { id: string; role: "error"; content: string };
+import type {
+  ClientToolCallPart,
+  ClientMessagePart,
+  Message,
+  StreamingState,
+  ActiveStream,
+  SubmitParams,
+  RunStreamParams,
+} from "./types/useChats.types";
 
-type StreamingState =
-  | { status: "idle" }
-  | {
-      status: "streaming";
-      parts: ClientMessagePart[];
-      agentState: AgentState;
-      model: SupportedChatModelId;
-    };
-
-type ActiveStream = {
-  requestId: string;
-  controller: AbortController;
-  agentState: AgentState;
-  model: SupportedChatModelId;
-  parts: ClientMessagePart[];
-  interruptedCaptured: boolean;
-};
-
-type SubmitParams = {
-  userText: string;
-  agentState: AgentState;
-  model: SupportedChatModelId;
-};
-
-type RunStreamParams = {
-  agentState: AgentState;
-  model: SupportedChatModelId;
-  request: (controller: AbortController) => Promise<ClientResponse<unknown>>;
-};
+export type { ClientToolCallPart, ClientMessagePart, Message };
 
 export function useChats(sessionId: string, initialMessages: Message[]) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
@@ -183,6 +144,38 @@ export function useChats(sessionId: string, initialMessages: Message[]) {
         }
 
         switch (event.type) {
+          case "reasoning-delta": {
+            const last = parts[parts.length - 1];
+            if (last && last.type === "reasoning") {
+              last.text += event.text;
+            } else {
+              parts.push({ type: "reasoning", text: event.text });
+            }
+            emitParts(activeStream.requestId, parts);
+            break;
+          }
+          case "tool_call":
+            parts.push({
+              type: "tool_call",
+              id: event.toolCallId,
+              name: event.toolName,
+              args: event.args,
+              status: "calling",
+            });
+            emitParts(activeStream.requestId, parts);
+            break;
+          case "tool_result": {
+            const tc = parts.find(
+              (p): p is ClientToolCallPart =>
+                p.type === "tool_call" && p.id === event.toolCallId,
+            );
+            if (tc) {
+              tc.result = event.result;
+              tc.status = "done";
+            }
+            emitParts(activeStream.requestId, parts);
+            break;
+          }
           case "text-delta": {
             const last = parts[parts.length - 1];
             if (last && last.type === "text") {

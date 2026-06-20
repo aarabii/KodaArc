@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
-import { DEFAULT_CHAT_MODEL_ID } from "@koda-arc/shared";
+import { AgentState } from "@koda-arc/database/enums";
 import { useNavigate, useLocation } from "react-router";
-import { UserMessage } from "../components";
 import { SessionShell } from "../layout";
+import { UserMessage } from "../components";
 import { useToast } from "../hooks";
 import { apiClient, getErrorMessage } from "../lib";
 
 const newSessionStateSchema = z.object({
   message: z.string(),
+  agentState: z.enum(AgentState),
+  model: z.string(),
 });
 
 export function NewSession() {
@@ -19,7 +21,6 @@ export function NewSession() {
 
   const state = useMemo(() => {
     const parsed = newSessionStateSchema.safeParse(location.state);
-
     return parsed.success ? parsed.data : null;
   }, [location.state]);
 
@@ -39,13 +40,13 @@ export function NewSession() {
       try {
         const res = await apiClient.sessions.$post({
           json: {
-            title: state.message.slice(0, 150),
+            title: state.message.slice(0, 100),
             cwd: process.cwd(),
             initialMessage: {
               role: "USER",
               content: state.message,
-              agentState: "BUILD",
-              model: DEFAULT_CHAT_MODEL_ID,
+              agentState: state.agentState,
+              model: state.model,
             },
           },
         });
@@ -55,20 +56,17 @@ export function NewSession() {
         if (!res.ok) {
           throw new Error(await getErrorMessage(res));
         }
-
         const session = await res.json();
         nav(`/sessions/${session.id}`, {
           replace: true,
-          state: {
-            session,
-          },
+          state: { session },
         });
-      } catch (err) {
+      } catch (error) {
         if (ignore) return;
         toast.show({
           variant: "error",
           message:
-            err instanceof Error ? err.message : "Failed to create session",
+            error instanceof Error ? error.message : "Failed to create session",
         });
         nav("/", { replace: true });
       }
@@ -80,11 +78,11 @@ export function NewSession() {
     };
   }, [state, nav, toast]);
 
-  if (!state?.message) return null;
+  if (!state) return null;
 
   return (
     <SessionShell onSubmit={() => {}} inputDisabled loading>
-      <UserMessage message={state.message} />
+      <UserMessage message={state.message} agentState={state.agentState} />
     </SessionShell>
   );
 }
