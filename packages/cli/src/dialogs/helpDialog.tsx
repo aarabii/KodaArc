@@ -22,7 +22,7 @@ export function HelpDialogContent() {
           renderItem={(faq, isSelected) => (
             <text
               selectable={false}
-              fg={isSelected ? colors.brand.primary : colors.text.primary}
+              fg={isSelected ? colors.selection.text : colors.text.primary}
             >
               {isSelected ? "› " : "  "}
               {faq.question}
@@ -47,7 +47,7 @@ export function HelpDialogContent() {
       {/* Answer detail panel */}
       {activeFaq ? (
         <box flexDirection="column" gap={1}>
-          <text attributes={TextAttributes.BOLD} fg={colors.brand.accent}>
+          <text attributes={TextAttributes.BOLD} fg={colors.text.secondary}>
             {activeFaq.question}
           </text>
           <text fg={colors.text.secondary}>{activeFaq.answer}</text>

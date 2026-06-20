@@ -19,6 +19,7 @@ export const AgentDialogContent = ({
   onSelectAgentState,
 }: AgentsDialogContextProps) => {
   const dialog = useDialog();
+  const { colors } = useTheme();
 
   const handleSelect = useCallback(
     (nextState: AgentState) => {
@@ -35,7 +36,7 @@ export const AgentDialogContent = ({
         getAgentStateLabel(item).toLowerCase().includes(q.toLowerCase())
       }
       renderItem={(item, isSelected) => (
-        <text selectable={false} fg={isSelected ? "black" : "white"}>
+        <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
           {item === currentAgentState ? "" : ""}
           {getAgentStateLabel(item)}
         </text>

@@ -172,7 +172,7 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
         border={["left"]}
         borderColor={
           agentState == AgentState.BUILD
-            ? colors.agent.executing
+            ? colors.agent.build
             : colors.agent.plan
         }
         width="100%"

@@ -30,7 +30,7 @@ export function UserMessage({ message, agentState }: Props) {
           justifyContent="center"
           paddingX={2}
           paddingY={1}
-          backgroundColor={colors.brand.accent}
+          backgroundColor={colors.brand.secondary}
           width="100%"
         >
           <text>{message}</text>

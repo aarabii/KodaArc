@@ -26,7 +26,7 @@ function DialogText({
   const colorMap: Record<DialogTextVariant, string> = {
     primary: colors.text.primary,
     muted: colors.text.muted,
-    success: colors.success.accent,
+    success: colors.toast.success.accent,
     brand: colors.brand.primary,
   };
 

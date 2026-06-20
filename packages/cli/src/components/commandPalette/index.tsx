@@ -53,12 +53,12 @@ export function CommandMenu({
             onMouseDown={() => onExecute(i)}
           >
             <box width={COMMAND_COL_WIDTH} flexShrink={0}>
-              <text selectable={false} fg={isSelected ? colors.brand.primary : colors.text.primary}>
+              <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
                 /{cmd.name}
               </text>
             </box>
             <box flexGrow={1} flexShrink={1} overflow="hidden">
-              <text selectable={false} fg={isSelected ? colors.selection.text : colors.agent.thinking}>
+              <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.secondary}>
                 {cmd.desc}
               </text>
             </box>

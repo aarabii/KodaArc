@@ -98,7 +98,7 @@ export function BotMessage({
                   paddingX={2}
                 >
                   <text attributes={TextAttributes.DIM}>
-                    <em fg={colors.agent.executing}>
+                    <em fg={colors.agent.build}>
                       {formatToolName(part.name)}:
                     </em>{" "}
                     {formatToolArgs(part)}
@@ -141,13 +141,13 @@ export function BotMessage({
               {agentState === AgentState.PLAN ? "Plan" : "Build"}
             </text>
 
-            <text attributes={TextAttributes.DIM} fg={colors.brand.accent}>
+            <text attributes={TextAttributes.DIM} fg={colors.agent.thinking}>
               ›
             </text>
             <text attributes={TextAttributes.DIM}>{model}</text>
             {(duration || interrupted) && (
               <>
-                <text attributes={TextAttributes.DIM} fg={colors.brand.accent}>
+                <text attributes={TextAttributes.DIM} fg={colors.agent.thinking}>
                   ›
                 </text>
                 <text attributes={TextAttributes.DIM}>

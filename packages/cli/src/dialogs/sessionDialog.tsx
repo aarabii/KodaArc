@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { TextAttributes } from "@opentui/core";
 import { format, isToday, isYesterday, isThisWeek } from "date-fns";
 import { useNavigate } from "react-router";
-import { useDialog, useToast } from "../hooks";
+import { useDialog, useToast, useTheme } from "../hooks";
 import { apiClient, getErrorMessage } from "../lib";
 import { SearchList } from "../components";
 import type { InferResponseType } from "hono/client";
@@ -17,6 +17,7 @@ export const SessionDialog = () => {
   const [loading, setLoading] = useState(true);
   const { close } = useDialog();
   const { show } = useToast();
+  const { colors } = useTheme();
   const nav = useNavigate();
 
   useEffect(() => {
@@ -95,13 +96,13 @@ export const SessionDialog = () => {
       filterFn={(s, q) => s.title.toLowerCase().includes(q.toLowerCase())}
       renderItem={(session, isSelected) => (
         <>
-          <text selectable={false} fg={isSelected ? "black" : "white"}>
+          <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
             {session.title}
           </text>
           <box flexGrow={1} />
           <text
             selectable={false}
-            fg={isSelected ? "black" : undefined}
+            fg={isSelected ? colors.selection.text : colors.text.muted}
             attributes={TextAttributes.DIM}
           >
             {formatSessionDate(session.createdAt)}

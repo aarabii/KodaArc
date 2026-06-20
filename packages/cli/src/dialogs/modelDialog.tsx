@@ -13,6 +13,7 @@ export const ModelDialogContent = ({
   onSelectModel,
 }: ModelDialogContextProps) => {
   const dialog = useDialog();
+  const { colors } = useTheme();
 
   const handleSelect = useCallback(
     (nextModel: SupportedChatModelId) => {
@@ -27,7 +28,7 @@ export const ModelDialogContent = ({
       onSelect={handleSelect}
       filterFn={(modelId, q) => modelId.toLowerCase().includes(q.toLowerCase())}
       renderItem={(modelId, isSelected) => (
-        <text selectable={false} fg={isSelected ? "black" : "white"}>
+        <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
           {modelId}
         </text>
       )}

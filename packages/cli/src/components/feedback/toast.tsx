@@ -15,7 +15,7 @@ export function Toast({ currentToast }: ToastProps) {
     return null;
   }
 
-  const colors = themeColors[currentToast.variant ?? "info"];
+  const colors = themeColors.toast[currentToast.variant ?? "info"];
 
   return (
     <box

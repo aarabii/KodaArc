@@ -45,7 +45,7 @@ export const SpinnerDialogContent = () => {
           onHighlight={handleHighlight}
           filterFn={(name, q) => name.toLowerCase().includes(q.toLowerCase())}
           renderItem={(name, isSelected) => (
-            <text selectable={false} fg={isSelected ? colors.brand.primary : colors.text.primary}>
+            <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
               {name === originalSpinnerRef.current
                 ? "\u0020\u2022\u0020"
                 : "\u0020\u0020\u0020"}

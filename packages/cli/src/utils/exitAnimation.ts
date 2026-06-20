@@ -5,20 +5,20 @@ import { getInitialTheme } from "../lib";
 export async function runExitAnimation(): Promise<void> {
   const theme = getInitialTheme();
   const primary = toAnsi(theme.colors.brand.primary, "36");
-  const thinking = toAnsi(theme.colors.agent.thinking, "35");
-  const success = toAnsi(theme.colors.success.accent, "32");
-  const info = toAnsi(theme.colors.info.accent, "36");
+  const secondary = toAnsi(theme.colors.brand.secondary, "35");
+  const success = toAnsi(theme.colors.toast.success.accent, "32");
+  const info = toAnsi(theme.colors.toast.info.accent, "36");
   const dim = toAnsi(theme.colors.border.dim, "90");
 
   const primaryRgb = hexToRgb(theme.colors.brand.primary);
-  const thinkingRgb = hexToRgb(theme.colors.agent.thinking);
+  const secondaryRgb = hexToRgb(theme.colors.brand.secondary);
 
-  /** Smooth truecolor interpolation: thinking → primary */
+  /** Smooth truecolor interpolation: secondary → primary */
   function gradientAnsi(t: number): string {
-    if (!primaryRgb || !thinkingRgb) return t < 0.5 ? thinking : primary;
-    const r = Math.round(thinkingRgb.r + (primaryRgb.r - thinkingRgb.r) * t);
-    const g = Math.round(thinkingRgb.g + (primaryRgb.g - thinkingRgb.g) * t);
-    const b = Math.round(thinkingRgb.b + (primaryRgb.b - thinkingRgb.b) * t);
+    if (!primaryRgb || !secondaryRgb) return t < 0.5 ? secondary : primary;
+    const r = Math.round(secondaryRgb.r + (primaryRgb.r - secondaryRgb.r) * t);
+    const g = Math.round(secondaryRgb.g + (primaryRgb.g - secondaryRgb.g) * t);
+    const b = Math.round(secondaryRgb.b + (primaryRgb.b - secondaryRgb.b) * t);
     return `38;2;${r};${g};${b}`;
   }
 

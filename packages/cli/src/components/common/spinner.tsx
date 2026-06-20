@@ -102,7 +102,11 @@ type Props = {
 export function Spinner({ agentState = AgentState.BUILD }: Props) {
   const { colors, currentSpinner } = useTheme();
   const activeColor =
-    agentState === AgentState.PLAN ? colors.agent.plan : colors.agent.idle;
+    agentState === AgentState.PLAN
+      ? colors.agent.plan
+      : agentState === AgentState.BUILD
+        ? colors.agent.build
+        : colors.agent.idle;
 
   return (
     <spinner name={(currentSpinner || "arc") as any} color={activeColor} />

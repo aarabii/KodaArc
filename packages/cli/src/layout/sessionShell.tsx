@@ -51,8 +51,8 @@ export function SessionShell({
             <>
               <Spinner agentState={agentState} />
               {interruptible ? (
-                <text>
-                  Press <strong>ESC</strong> to interrrupt
+                <text fg={colors.text.muted}>
+                  Press <strong fg={colors.brand.primary}>ESC</strong> to interrupt
                 </text>
               ) : null}
             </>

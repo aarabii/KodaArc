@@ -9,7 +9,7 @@ export function StatusBar() {
   return (
     <box flexDirection="row" gap={1}>
       <text
-        fg={agentState === AgentState.PLAN ? colors.agent.plan : colors.agent.executing}
+        fg={agentState === AgentState.PLAN ? colors.agent.plan : colors.agent.build}
       >
         {agentState === AgentState.PLAN ? "Plan" : "Build"}
       </text>

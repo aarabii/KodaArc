@@ -3,11 +3,12 @@ import { useNavigate } from "react-router";
 import { TextAttributes } from "@opentui/core";
 
 import { Header, InputBar } from "../components";
-import { usePromptConfig } from "../hooks";
+import { usePromptConfig, useTheme } from "../hooks";
 
 export function Home() {
   const nav = useNavigate();
   const { agentState, model } = usePromptConfig();
+  const { colors } = useTheme();
 
   const handleSubmit = useCallback(
     (text: string) => {
@@ -36,8 +37,8 @@ export function Home() {
       >
         <InputBar onSubmit={handleSubmit} />
         <box flexDirection="row" gap={1} flexShrink={0} marginLeft="auto">
-          <text>tab</text>
-          <text attributes={TextAttributes.DIM}>agents</text>
+          <text fg={colors.brand.primary}>tab</text>
+          <text fg={colors.text.muted}>agents</text>
         </box>
       </box>
     </box>
