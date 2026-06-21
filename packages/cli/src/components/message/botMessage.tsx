@@ -128,6 +128,39 @@ function getMarkdownSyntaxStyle(colors: any) {
   return style;
 }
 
+function getReasoningMarkdownSyntaxStyle(colors: any) {
+  const style = SyntaxStyle.create();
+
+  // Register inline formatting styles
+  style.registerStyle("markup.strong", { bold: true, dim: true });
+  style.registerStyle("markup.italic", { italic: true, dim: true });
+  style.registerStyle("markup.strikethrough", { dim: true });
+  style.registerStyle("markup.raw", { fg: RGBA.fromHex(colors.agent.build), dim: true });
+
+  style.registerStyle("markup.link.label", {
+    fg: RGBA.fromHex(colors.brand.primary),
+    bold: true,
+    dim: true,
+  });
+  style.registerStyle("markup.link.url", {
+    fg: RGBA.fromHex(colors.text.secondary),
+    dim: true,
+  });
+  style.registerStyle("markup.heading", {
+    fg: RGBA.fromHex(colors.brand.secondary),
+    bold: true,
+    dim: true,
+  });
+
+  // Code highlights
+  style.registerStyle("string", { fg: RGBA.fromHex(colors.brand.primary), dim: true });
+  style.registerStyle("comment", { fg: RGBA.fromHex(colors.text.muted), italic: true, dim: true });
+  style.registerStyle("keyword", { fg: RGBA.fromHex(colors.brand.secondary), bold: true, dim: true });
+  style.registerStyle("number", { fg: RGBA.fromHex(colors.agent.plan), dim: true });
+
+  return style;
+}
+
 export function BotMessage({
   parts,
   model,
@@ -139,6 +172,7 @@ export function BotMessage({
   const { colors } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const syntaxStyle = useMemo(() => getMarkdownSyntaxStyle(colors), [colors]);
+  const reasoningSyntaxStyle = useMemo(() => getReasoningMarkdownSyntaxStyle(colors), [colors]);
   return (
     <box width="100%" alignItems="center">
       {groupConsecutiveParts(parts).map((group) => (
@@ -189,9 +223,12 @@ export function BotMessage({
                     width="100%"
                     paddingX={2}
                   >
-                    <text attributes={TextAttributes.DIM}>
-                      <markdown content={part.text} syntaxStyle={syntaxStyle} streaming={streaming} />
-                    </text>
+                    <markdown
+                      content={part.text}
+                      syntaxStyle={reasoningSyntaxStyle}
+                      streaming={streaming}
+                      fg={colors.text.muted}
+                    />
                   </box>
 
                   <box paddingLeft={2}>
@@ -270,7 +307,7 @@ export function BotMessage({
               ›
             </text>
             <text attributes={TextAttributes.DIM}>{model}</text>
-            {(duration || interrupted) && (
+            {(duration || interrupted) ? (
               <>
                 <text attributes={TextAttributes.DIM} fg={colors.agent.thinking}>
                   ›
@@ -279,7 +316,7 @@ export function BotMessage({
                   {interrupted ? "interrupted" : duration}
                 </text>
               </>
-            )}
+            ) : null}
           </box>
         </box>
       </box>
