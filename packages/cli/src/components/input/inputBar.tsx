@@ -1,8 +1,11 @@
-import { useRef, useCallback, useEffect } from "react";
-import type { TextareaRenderable } from "@opentui/core";
+import { useState, useRef, useCallback, useEffect } from "react";
+import {
+  TextAttributes,
+  decodePasteBytes,
+  type TextareaRenderable,
+  type ScrollBoxRenderable,
+} from "@opentui/core";
 import { useRenderer, useKeyboard, usePaste } from "@opentui/react";
-import { decodePasteBytes } from "@opentui/core";
-import type { KeyBinding } from "@opentui/core";
 import { EmptyBorder } from "../common";
 import { StatusBar } from "../feedback";
 import { CommandMenu } from "../commandPalette";
@@ -18,6 +21,14 @@ import {
   usePromptConfig,
 } from "../../hooks";
 import { AgentState } from "@koda-arc/database/enums";
+import { TEXT_AREA_KEY_BINDINGS } from "./keybindings";
+import {
+  type MentionMatch,
+  type MentionCandidate,
+  findActiveMention,
+  getMentionCandidates,
+  FileMentionMenu,
+} from "./mentions";
 
 type InputBarProps = {
   onSubmit: (text: string) => void;
@@ -37,76 +48,29 @@ const placeholderValues = [
   "What does your codebase need today?",
 ];
 
-export const TEXT_AREA_KEY_BINDINGS: KeyBinding[] = [
-  // Submit / newline
-  { name: "return", action: "submit" },
-  { name: "enter", action: "submit" },
-  { name: "return", shift: true, action: "newline" },
-  { name: "enter", shift: true, action: "newline" },
-
-  // Undo / redo
-  { name: "z", ctrl: true, action: "undo" },
-  { name: "y", ctrl: true, action: "redo" },
-
-  // Select all
-  { name: "a", ctrl: true, action: "select-all" },
-
-  // Cursor movement
-  { name: "left", action: "move-left" },
-  { name: "right", action: "move-right" },
-  { name: "up", action: "move-up" },
-  { name: "down", action: "move-down" },
-
-  // Selection via shift+arrows
-  { name: "left", shift: true, action: "select-left" },
-  { name: "right", shift: true, action: "select-right" },
-  { name: "up", shift: true, action: "select-up" },
-  { name: "down", shift: true, action: "select-down" },
-
-  // Home / End
-  { name: "home", action: "line-home" },
-  { name: "end", action: "line-end" },
-  { name: "home", shift: true, action: "select-line-home" },
-  { name: "end", shift: true, action: "select-line-end" },
-
-  // Buffer home / end (Ctrl+Home / Ctrl+End)
-  { name: "home", ctrl: true, action: "buffer-home" },
-  { name: "end", ctrl: true, action: "buffer-end" },
-  { name: "home", ctrl: true, shift: true, action: "select-buffer-home" },
-  { name: "end", ctrl: true, shift: true, action: "select-buffer-end" },
-
-  // Word navigation (Ctrl+Left / Ctrl+Right)
-  { name: "right", ctrl: true, action: "word-forward" },
-  { name: "left", ctrl: true, action: "word-backward" },
-  { name: "right", ctrl: true, shift: true, action: "select-word-forward" },
-  { name: "left", ctrl: true, shift: true, action: "select-word-backward" },
-
-  // Delete operations
-  { name: "backspace", action: "backspace" },
-  { name: "delete", action: "delete" },
-  { name: "backspace", ctrl: true, action: "delete-word-backward" },
-  { name: "delete", ctrl: true, action: "delete-word-forward" },
-
-  // Line operations
-  { name: "k", ctrl: true, shift: true, action: "delete-line" },
-  { name: "k", ctrl: true, action: "delete-to-line-end" },
-  { name: "u", ctrl: true, action: "delete-to-line-start" },
-];
-
 export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
-  const { agentState, toggleAgentState, setAgentState, setModel } = usePromptConfig();
+  const { agentState, toggleAgentState, setAgentState, setModel } =
+    usePromptConfig();
   const { paste: getClipboardText } = useClipboard();
   const { colors } = useTheme();
-  const placeholderTxt =
-    placeholderValues[Math.floor(Math.random() * placeholderValues.length)];
+  const [placeholderTxt] = useState(
+    () => placeholderValues[Math.floor(Math.random() * placeholderValues.length)]
+  );
 
   const textareaRef = useRef<TextareaRenderable>(null);
   const onSubmitRef = useRef<() => void>(() => {});
+  const activeMentionRef = useRef<MentionMatch | null>(null);
+  const mentionScrollRef = useRef<ScrollBoxRenderable>(null);
+  const [activeMention, setActiveMention] = useState<MentionMatch | null>(null);
+  const [mentionCandidates, setMentionCandidates] = useState<
+    MentionCandidate[]
+  >([]);
+  const [mentionSelectedIndex, setMentionSelectedIndex] = useState(0);
   const renderer = useRenderer();
   const toast = useToast();
   const dialog = useDialog();
   const nav = useNavigate();
-  const { isTopLayer, setResponder } = useKeyboardLayer();
+  const { isTopLayer, setResponder, pop, push } = useKeyboardLayer();
 
   const {
     showCommandMenu,
@@ -117,6 +81,41 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
     resolveCommand,
     setSelectedCommandIdx,
   } = useCommandMenu();
+
+  const showMentionMenu = activeMention !== null;
+  const closeMentionMenu = useCallback(() => {
+    activeMentionRef.current = null;
+    setActiveMention(null);
+    setMentionCandidates([]);
+    pop("mention");
+  }, [pop]);
+  const syncMentionMenu = useCallback(
+    (text: string, cursorOffset: number) => {
+      const nextMention = findActiveMention(text, cursorOffset);
+      const previousMention = activeMentionRef.current;
+      const mentionChanged =
+        previousMention?.start !== nextMention?.start ||
+        previousMention?.end !== nextMention?.end ||
+        previousMention?.query !== nextMention?.query;
+      if (!nextMention) {
+        if (previousMention) {
+          closeMentionMenu();
+        }
+        return;
+      }
+      activeMentionRef.current = nextMention;
+      setActiveMention(nextMention);
+      push("mention", () => {
+        closeMentionMenu();
+        return true;
+      });
+      if (mentionChanged) {
+        setMentionSelectedIndex(0);
+        mentionScrollRef.current?.scrollTo(0);
+      }
+    },
+    [closeMentionMenu, push],
+  );
 
   const handleCommandExecute = useCallback((idx: number) => {
     const cmd = resolveCommand(idx);
@@ -129,8 +128,11 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
     const txtarea = textareaRef.current;
     if (!txtarea) return;
 
+    const text = txtarea.plainText;
+
     handleContentChange(txtarea.plainText);
-  }, []);
+    syncMentionMenu(text, txtarea.cursorOffset);
+  }, [handleContentChange, syncMentionMenu]);
 
   const handleSubmit = useCallback(() => {
     if (disabled) return;
@@ -144,6 +146,27 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
     onSubmit(txt);
     txtarea.setText("");
   }, [disabled, onSubmit]);
+
+  const handleMentionExecute = useCallback(
+    (index: number) => {
+      const textarea = textareaRef.current;
+      const mention = activeMentionRef.current;
+      const candidate = mentionCandidates[index];
+      if (!textarea || !mention || !candidate) return;
+      const insertion =
+        candidate.kind === "dir" ? candidate.path : `${candidate.path} `;
+      const nextText = `${textarea.plainText.slice(0, mention.start)}@${insertion}${textarea.plainText.slice(mention.end)}`;
+      textarea.replaceText(nextText);
+      textarea.cursorOffset = mention.start + insertion.length + 1;
+      syncMentionMenu(nextText, textarea.cursorOffset);
+    },
+    [mentionCandidates, syncMentionMenu],
+  );
+  const handleTextareaCursorChange = useCallback(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    syncMentionMenu(textarea.plainText, textarea.cursorOffset);
+  }, [syncMentionMenu]);
 
   const handleCommand = useCallback(
     (command: CommandType | undefined) => {
@@ -170,6 +193,29 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
   );
 
   useEffect(() => {
+    if (!activeMention) {
+      setMentionCandidates([]);
+      return;
+    }
+    let ignore = false;
+    const loadCandidates = async () => {
+      const nextCandidates = await getMentionCandidates(activeMention.query);
+      if (ignore) return;
+      setMentionCandidates(nextCandidates);
+      setMentionSelectedIndex((currentIndex) => {
+        if (nextCandidates.length === 0) {
+          return 0;
+        }
+        return Math.min(currentIndex, nextCandidates.length - 1);
+      });
+    };
+    void loadCandidates();
+    return () => {
+      ignore = true;
+    };
+  }, [activeMention]);
+
+  useEffect(() => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
@@ -187,6 +233,14 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
         handleCommand(command);
       }
       return;
+    }
+
+    if (showMentionMenu) {
+      const candidate = mentionCandidates[mentionSelectedIndex];
+      if (candidate) {
+        handleMentionExecute(mentionSelectedIndex);
+        return;
+      }
     }
 
     handleSubmit();
@@ -245,6 +299,45 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
     return () => setResponder("base", null);
   }, [disabled, setResponder]);
 
+  useKeyboard((key) => {
+    if (disabled) return;
+    if (!showMentionMenu || !isTopLayer("mention")) return;
+    if (key.name === "escape") {
+      key.preventDefault();
+      closeMentionMenu();
+    } else if (key.name === "up") {
+      key.preventDefault();
+      setMentionSelectedIndex((currentIndex) => {
+        const nextIndex = Math.max(0, currentIndex - 1);
+        const scrollbox = mentionScrollRef.current;
+        if (scrollbox && nextIndex < scrollbox.scrollTop) {
+          scrollbox.scrollTo(nextIndex);
+        }
+        return nextIndex;
+      });
+    } else if (key.name === "down") {
+      key.preventDefault();
+      setMentionSelectedIndex((currentIndex) => {
+        if (mentionCandidates.length === 0) {
+          return 0;
+        }
+        const nextIndex = Math.min(
+          mentionCandidates.length - 1,
+          currentIndex + 1,
+        );
+        const scrollbox = mentionScrollRef.current;
+        if (scrollbox) {
+          const viewportHeight = scrollbox.viewport.height;
+          const visibleEnd = scrollbox.scrollTop + viewportHeight - 1;
+          if (nextIndex > visibleEnd) {
+            scrollbox.scrollTo(nextIndex - viewportHeight + 1);
+          }
+        }
+        return nextIndex;
+      });
+    }
+  });
+
   return (
     <box width="100%" alignItems="center">
       <box
@@ -288,10 +381,33 @@ export function InputBar({ onSubmit, disabled = false }: InputBarProps) {
               />
             </box>
           )}
+          {!showCommandMenu && showMentionMenu && (
+            <box
+              position="absolute"
+              bottom="100%"
+              left={0}
+              width="100%"
+              backgroundColor={colors.bg.elevated}
+              zIndex={10}
+            >
+              <FileMentionMenu
+                candidates={mentionCandidates}
+                selectedIndex={mentionSelectedIndex}
+                scrollRef={mentionScrollRef}
+                onSelect={setMentionSelectedIndex}
+                onExecute={handleMentionExecute}
+              />
+            </box>
+          )}
           <textarea
             ref={textareaRef}
             onContentChange={handleTxtAreaCntChange}
-            focused={(!disabled && isTopLayer("base")) || isTopLayer("command")}
+            focused={
+              !disabled &&
+              (isTopLayer("base") ||
+                isTopLayer("command") ||
+                isTopLayer("mention"))
+            }
             keyBindings={TEXT_AREA_KEY_BINDINGS}
             placeholder={placeholderTxt}
           />
