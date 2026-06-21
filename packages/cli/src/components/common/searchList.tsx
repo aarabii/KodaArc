@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   TextAttributes,
   type InputRenderable,
@@ -13,6 +13,7 @@ type SearchListProps<T> = {
   items: T[];
   onSelect: (item: T) => void;
   onHighlight?: (item: T) => void;
+  onDelete?: (item: T) => void;
   filterFn: (item: T, q: string) => boolean;
   renderItem: (item: T, isSelected: boolean) => ReactNode;
   getKey: (item: T) => string;
@@ -24,6 +25,7 @@ export function SearchList<T>({
   items,
   onSelect,
   onHighlight,
+  onDelete,
   filterFn,
   renderItem,
   getKey,
@@ -52,6 +54,12 @@ export function SearchList<T>({
     ? items.filter((item) => filterFn(item, searchValue))
     : items;
 
+  useEffect(() => {
+    if (selectedIdx >= filtered.length && filtered.length > 0) {
+      setSelectedIdx(filtered.length - 1);
+    }
+  }, [filtered.length, selectedIdx]);
+
   const visibleHeight = Math.min(filtered.length, MAX_VISIBLE_ITEMS);
 
   useKeyboard((key) => {
@@ -61,6 +69,11 @@ export function SearchList<T>({
       const item = filtered[selectedIdx];
       if (item) {
         onSelect(item);
+      }
+    } else if (key.name === "delete") {
+      const item = filtered[selectedIdx];
+      if (item && onDelete) {
+        onDelete(item);
       }
     } else if (key.name === "up") {
       setSelectedIdx((i) => {

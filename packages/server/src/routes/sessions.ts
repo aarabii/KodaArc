@@ -115,6 +115,28 @@ const app = new Hono()
     });
 
     return c.json(session, 201);
+  })
+  .delete("/:id", async (c) => {
+    const id = c.req.param("id");
+
+    try {
+      const deleted = await db.session.delete({
+        where: { id },
+      });
+
+      Sentry.logger.info("Deleted session", {
+        sessionId: id,
+        title: deleted.title,
+      });
+
+      return c.json({ success: true });
+    } catch (err) {
+      Sentry.logger.error("Failed to delete session", {
+        sessionId: id,
+        error: err instanceof Error ? err.message : String(err),
+      });
+      return c.json({ error: "Session not found" }, 404);
+    }
   });
 
 export default app;

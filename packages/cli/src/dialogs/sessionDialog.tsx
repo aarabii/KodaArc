@@ -62,6 +62,31 @@ export const SessionDialog = () => {
     [close, nav],
   );
 
+  const handleDelete = useCallback(
+    async (session: Session) => {
+      try {
+        const res = await apiClient.sessions[":id"].$delete({
+          param: { id: session.id },
+        });
+
+        if (!res.ok) throw new Error(await getErrorMessage(res));
+
+        setSessions((prev) => prev.filter((s) => s.id !== session.id));
+        show({
+          variant: "success",
+          message: "Session deleted successfully",
+        });
+      } catch (err) {
+        show({
+          variant: "error",
+          message:
+            err instanceof Error ? err.message : "Failed to delete session",
+        });
+      }
+    },
+    [show],
+  );
+
   if (loading) {
     return (
       <box flexDirection="column">
@@ -93,6 +118,7 @@ export const SessionDialog = () => {
     <SearchList
       items={sessons}
       onSelect={handleSelect}
+      onDelete={handleDelete}
       filterFn={(s, q) => s.title.toLowerCase().includes(q.toLowerCase())}
       renderItem={(session, isSelected) => (
         <>
@@ -100,6 +126,20 @@ export const SessionDialog = () => {
             {session.title}
           </text>
           <box flexGrow={1} />
+          {isSelected && (
+            <box marginRight={2}>
+              <text
+                selectable={false}
+                fg={colors.toast.error.accent}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  handleDelete(session);
+                }}
+              >
+                [Delete]
+              </text>
+            </box>
+          )}
           <text
             selectable={false}
             fg={isSelected ? colors.selection.text : colors.text.muted}
