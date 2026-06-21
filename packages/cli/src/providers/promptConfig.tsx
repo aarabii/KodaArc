@@ -12,7 +12,7 @@ type PromptConfigProviderProps = {
 };
 
 export function PromptConfigProvider({ children }: PromptConfigProviderProps) {
-  const [agentState, setAgentState] = useState<AgentState>(AgentState.BUILD);
+  const [agentState, setAgentState] = useState<AgentState>(AgentState.PLAN);
   const [model, setModel] = useState<SupportedChatModelId>(
     DEFAULT_CHAT_MODEL_ID,
   );
