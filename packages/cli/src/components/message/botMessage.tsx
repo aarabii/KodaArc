@@ -51,7 +51,7 @@ function groupConsecutiveParts(parts: ClientMessagePart[]): PartGroup[] {
   return groups;
 }
 
-function renderFormattedText(text: string, colors: any) {
+function renderFormattedText(text: string, colors: any, dimNormalText = false) {
   const TOKEN_REGEX = /(\*\*.*?\*\*|__.*?__|`.*?`|"[^"]+?"|\*.*?\*|_.*?_)/g;
   const tokens = text.split(TOKEN_REGEX);
 
@@ -72,14 +72,14 @@ function renderFormattedText(text: string, colors: any) {
     }
     if (token.startsWith("*") && token.endsWith("*")) {
       return (
-        <span key={index} attributes={TextAttributes.ITALIC | TextAttributes.DIM}>
+        <span key={index} attributes={TextAttributes.ITALIC | (dimNormalText ? TextAttributes.DIM : 0)}>
           {token.slice(1, -1)}
         </span>
       );
     }
     if (token.startsWith("_") && token.endsWith("_")) {
       return (
-        <span key={index} attributes={TextAttributes.ITALIC | TextAttributes.DIM}>
+        <span key={index} attributes={TextAttributes.ITALIC | (dimNormalText ? TextAttributes.DIM : 0)}>
           {token.slice(1, -1)}
         </span>
       );
@@ -99,7 +99,7 @@ function renderFormattedText(text: string, colors: any) {
       );
     }
     return (
-      <span key={index} attributes={TextAttributes.DIM}>
+      <span key={index} attributes={dimNormalText ? TextAttributes.DIM : 0}>
         {token}
       </span>
     );
@@ -166,7 +166,7 @@ export function BotMessage({
                     width="100%"
                     paddingX={2}
                   >
-                    <text>{renderFormattedText(part.text, colors)}</text>
+                    <text>{renderFormattedText(part.text, colors, true)}</text>
                   </box>
 
                   <box paddingLeft={2}>
@@ -209,7 +209,7 @@ export function BotMessage({
             if (part.type === "text") {
               return (
                 <box key={`text-${j}`} paddingX={3} width="100%">
-                  <text>{part.text}</text>
+                  <text>{renderFormattedText(part.text, colors, false)}</text>
                 </box>
               );
             }
