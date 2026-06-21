@@ -6,7 +6,7 @@
 
 ## High-Level Overview
 
-KodaArc follows a **client-server monorepo** pattern. The CLI is a standalone terminal application that communicates with a local HTTP API server over `localhost:3000`. Both share type definitions and validation schemas through a common `shared` package, and both read from the same PostgreSQL database through the `database` package.
+KodaArc follows a **client-server monorepo** pattern. The CLI is a standalone terminal application that communicates with a local HTTP API server over `localhost:6969`. Both share type definitions and validation schemas through a common `shared` package, and both read from the same PostgreSQL database through the `database` package.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -29,7 +29,7 @@ KodaArc follows a **client-server monorepo** pattern. The CLI is a standalone te
 │   ┌───────────────┼──────────────────────────────────────────┐  │
 │   │               ▼                                          │  │
 │   │                    @koda-arc/server                       │  │
-│   │  Hono HTTP Framework (Bun runtime, port 3000)            │  │
+│   │  Hono HTTP Framework (Bun runtime, port 6969)            │  │
 │   │  ┌────────────┐  ┌──────────────┐  ┌────────────────┐   │  │
 │   │  │  Routes    │  │   AI Core    │  │    Tools       │   │  │
 │   │  │/sessions   │  │streamText()  │  │readFile, bash  │   │  │
@@ -125,6 +125,7 @@ The `useChats` hook:
 ### 5. Rendering (CLI)
 
 The `Session` screen renders:
+
 - All committed messages via `ChatMessage` (dispatches to `UserMessage`, `BotMessage`, or `ErrorMessage`)
 - The active streaming parts via a second `BotMessage` with `streaming={true}`
 - A bottom bar with `InputBar`, loading spinner, and interrupt instructions
@@ -137,16 +138,16 @@ Tools are created via factory functions (`createReadFileTool(cwd)`, etc.) that c
 
 The tool set is **mode-dependent**:
 
-| Tool            | PLAN | BUILD |
-| --------------- | ---- | ----- |
-| `readFile`      | ✅   | ✅    |
-| `listDirectory` | ✅   | ✅    |
-| `grep`          | ✅   | ✅    |
-| `glob`          | ✅   | ✅    |
+| Tool            | PLAN           | BUILD     |
+| --------------- | -------------- | --------- |
+| `readFile`      | ✅             | ✅        |
+| `listDirectory` | ✅             | ✅        |
+| `grep`          | ✅             | ✅        |
+| `glob`          | ✅             | ✅        |
 | `gitHelper`     | ✅ (read-only) | ✅ (full) |
-| `writeFile`     | ❌   | ✅    |
-| `editFile`      | ❌   | ✅    |
-| `bash`          | ❌   | ✅    |
+| `writeFile`     | ❌             | ✅        |
+| `editFile`      | ❌             | ✅        |
+| `bash`          | ❌             | ✅        |
 
 In `PLAN` mode, the `gitHelper` tool blocks mutating subcommands (`commit`, `branch` with a name) and returns an error message.
 
@@ -167,14 +168,14 @@ ThemeProvider
                                 └── <Outlet /> (screens)
 ```
 
-| Provider | Purpose | Persistence |
-| -------- | ------- | ----------- |
-| `ThemeProvider` | Color theme + spinner selection | `~/.koda-arc/pref.json` |
-| `ToastProvider` | Transient toast notifications | In-memory only |
-| `KeyboardLayerProvider` | Keyboard input layer stack (for dialogs, menus) | In-memory only |
-| `ClipboardProvider` | System clipboard read/write | N/A (delegates to OS) |
-| `DialogProvider` | Modal dialog open/close state | In-memory only |
-| `PromptConfigProvider` | Active agent state + selected model | In-memory only |
+| Provider                | Purpose                                         | Persistence             |
+| ----------------------- | ----------------------------------------------- | ----------------------- |
+| `ThemeProvider`         | Color theme + spinner selection                 | `~/.koda-arc/pref.json` |
+| `ToastProvider`         | Transient toast notifications                   | In-memory only          |
+| `KeyboardLayerProvider` | Keyboard input layer stack (for dialogs, menus) | In-memory only          |
+| `ClipboardProvider`     | System clipboard read/write                     | N/A (delegates to OS)   |
+| `DialogProvider`        | Modal dialog open/close state                   | In-memory only          |
+| `PromptConfigProvider`  | Active agent state + selected model             | In-memory only          |
 
 ---
 
@@ -182,11 +183,11 @@ ThemeProvider
 
 The CLI uses `react-router` with an in-memory router (no browser URL bar). Three routes:
 
-| Path | Screen | Purpose |
-| ---- | ------ | ------- |
-| `/` | `Home` | Landing page with ASCII header and input bar |
+| Path            | Screen       | Purpose                                                         |
+| --------------- | ------------ | --------------------------------------------------------------- |
+| `/`             | `Home`       | Landing page with ASCII header and input bar                    |
 | `/sessions/new` | `NewSession` | Transient screen that creates a session via API, then redirects |
-| `/sessions/:id` | `Session` | Full chat interface with message history and streaming |
+| `/sessions/:id` | `Session`    | Full chat interface with message history and streaming          |
 
 Navigation uses `location.state` to pass prefetched data between routes, avoiding redundant API calls.
 

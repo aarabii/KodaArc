@@ -19,16 +19,16 @@ This package is the **user-facing frontend** of KodaArc. It renders a full termi
 
 ## Tech Stack
 
-| Technology | Purpose |
-| ---------- | ------- |
-| React 19 | Component model and state management |
-| OpenTUI (core + react) | Terminal UI rendering at 60 FPS with JSX |
-| react-router 7.x | In-memory routing (Home → NewSession → Session) |
-| eventsource-parser | SSE stream parsing for AI responses |
-| Hono Client | Type-safe HTTP client (RPC mode via `AppType`) |
-| Zod 4.x | State validation, stream event parsing |
-| date-fns | Date formatting |
-| pretty-ms | Duration formatting |
+| Technology             | Purpose                                         |
+| ---------------------- | ----------------------------------------------- |
+| React 19               | Component model and state management            |
+| OpenTUI (core + react) | Terminal UI rendering at 60 FPS with JSX        |
+| react-router 7.x       | In-memory routing (Home → NewSession → Session) |
+| eventsource-parser     | SSE stream parsing for AI responses             |
+| Hono Client            | Type-safe HTTP client (RPC mode via `AppType`)  |
+| Zod 4.x                | State validation, stream event parsing          |
+| date-fns               | Date formatting                                 |
+| pretty-ms              | Duration formatting                             |
 
 ---
 
@@ -101,31 +101,31 @@ src/
 
 ### Workspace Dependencies
 
-| Package | Import Path | Usage |
-| ------- | ----------- | ----- |
-| `@koda-arc/shared` | `@koda-arc/shared` | Model IDs, Zod schemas, ChatStreamEvent types |
-| `@koda-arc/database` | `@koda-arc/database/enums` | `AgentState`, `MessageStatus`, `Role` enums |
-| `@koda-arc/server` | `@koda-arc/server` (devDep) | `AppType` for Hono RPC type inference only |
+| Package              | Import Path                 | Usage                                         |
+| -------------------- | --------------------------- | --------------------------------------------- |
+| `@koda-arc/shared`   | `@koda-arc/shared`          | Model IDs, Zod schemas, ChatStreamEvent types |
+| `@koda-arc/database` | `@koda-arc/database/enums`  | `AgentState`, `MessageStatus`, `Role` enums   |
+| `@koda-arc/server`   | `@koda-arc/server` (devDep) | `AppType` for Hono RPC type inference only    |
 
 ### Key External Dependencies
 
-| Package | Usage |
-| ------- | ----- |
-| `@opentui/core` | Terminal renderer, `TextAttributes`, `ScrollBoxRenderable` |
-| `@opentui/react` | React bindings — `createRoot`, `useKeyboard` |
-| `react` / `react-router` | Component model and client-side routing |
-| `eventsource-parser` | SSE stream parsing (`EventSourceParserStream`) |
-| `hono` | Client-side RPC (`hc<AppType>`) |
+| Package                  | Usage                                                      |
+| ------------------------ | ---------------------------------------------------------- |
+| `@opentui/core`          | Terminal renderer, `TextAttributes`, `ScrollBoxRenderable` |
+| `@opentui/react`         | React bindings — `createRoot`, `useKeyboard`               |
+| `react` / `react-router` | Component model and client-side routing                    |
+| `eventsource-parser`     | SSE stream parsing (`EventSourceParserStream`)             |
+| `hono`                   | Client-side RPC (`hc<AppType>`)                            |
 
 ---
 
 ## Routing
 
-| Path | Screen | Purpose |
-| ---- | ------ | ------- |
-| `/` | `Home` | ASCII header, centered input bar, "tab agents" hint |
-| `/sessions/new` | `NewSession` | Creates session via API → redirects to `/sessions/:id` |
-| `/sessions/:id` | `Session` | Full chat with message history, streaming, and interrupt |
+| Path            | Screen       | Purpose                                                  |
+| --------------- | ------------ | -------------------------------------------------------- |
+| `/`             | `Home`       | ASCII header, centered input bar, "tab agents" hint      |
+| `/sessions/new` | `NewSession` | Creates session via API → redirects to `/sessions/:id`   |
+| `/sessions/:id` | `Session`    | Full chat with message history, streaming, and interrupt |
 
 Navigation passes data via `location.state` to avoid redundant API calls. The `NewSession` screen is a transient intermediary — the user never stays on it.
 
@@ -145,7 +145,7 @@ The `useChats` hook manages chat-specific state (messages, streaming status, abo
 
 ## How It Connects to the System
 
-- **Outbound:** Sends HTTP requests to `@koda-arc/server` via the Hono RPC client at `API_URL` (default: `http://localhost:3000`)
+- **Outbound:** Sends HTTP requests to `@koda-arc/server` via the Hono RPC client at `API_URL` (default: `http://localhost:6969`)
 - **Type Safety:** Imports `AppType` from the server package at compile time, ensuring all API calls are type-checked against the server's actual route definitions
 - **No Direct DB Access:** The CLI never touches the database directly — all data access goes through the server API
 

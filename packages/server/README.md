@@ -17,17 +17,17 @@ This package is the **backend brain** of KodaArc. It exposes a Hono HTTP API tha
 
 ## Tech Stack
 
-| Technology | Purpose |
-| ---------- | ------- |
-| Hono 4.x | HTTP framework with type-safe routing |
-| Vercel AI SDK 6.x | `streamText()`, tool definitions, multi-provider support |
-| @ai-sdk/anthropic | Claude model integration |
-| @ai-sdk/openai | GPT model integration |
-| @ai-sdk/google | Gemini model integration |
-| @hono/zod-validator | Request body validation middleware |
-| @sentry/hono | Error tracking and structured logging |
-| Zod 4.x | Schema validation |
-| Bun | Runtime with hot-reload dev server |
+| Technology          | Purpose                                                  |
+| ------------------- | -------------------------------------------------------- |
+| Hono 4.x            | HTTP framework with type-safe routing                    |
+| Vercel AI SDK 6.x   | `streamText()`, tool definitions, multi-provider support |
+| @ai-sdk/anthropic   | Claude model integration                                 |
+| @ai-sdk/openai      | GPT model integration                                    |
+| @ai-sdk/google      | Gemini model integration                                 |
+| @hono/zod-validator | Request body validation middleware                       |
+| @sentry/hono        | Error tracking and structured logging                    |
+| Zod 4.x             | Schema validation                                        |
+| Bun                 | Runtime with hot-reload dev server                       |
 
 ---
 
@@ -66,32 +66,32 @@ src/
 
 ### Workspace Dependencies
 
-| Package | Usage |
-| ------- | ----- |
-| `@koda-arc/database` | Prisma client (`db`) for session/message persistence, enum imports |
-| `@koda-arc/shared` | Model registry (`findSupportedChatModelById`), Zod schemas (`messagePartsSchema`, `toolCallArgsSchema`), types |
+| Package              | Usage                                                                                                          |
+| -------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `@koda-arc/database` | Prisma client (`db`) for session/message persistence, enum imports                                             |
+| `@koda-arc/shared`   | Model registry (`findSupportedChatModelById`), Zod schemas (`messagePartsSchema`, `toolCallArgsSchema`), types |
 
 ### Key External Dependencies
 
-| Package | Usage |
-| ------- | ----- |
-| `ai` | Core AI SDK — `streamText()`, `tool()`, `stepCountIs()` |
-| `hono` | HTTP framework, SSE streaming (`streamSSE`) |
-| `@hono/zod-validator` | Zod-based request validation middleware |
-| `@sentry/hono/bun` | Sentry integration for Bun+Hono |
+| Package               | Usage                                                   |
+| --------------------- | ------------------------------------------------------- |
+| `ai`                  | Core AI SDK — `streamText()`, `tool()`, `stepCountIs()` |
+| `hono`                | HTTP framework, SSE streaming (`streamSSE`)             |
+| `@hono/zod-validator` | Zod-based request validation middleware                 |
+| `@sentry/hono/bun`    | Sentry integration for Bun+Hono                         |
 
 ---
 
 ## API Endpoints
 
-| Method | Path | Description |
-| ------ | ---- | ----------- |
-| `GET` | `/sessions` | List all sessions (newest first) |
-| `GET` | `/sessions/:id` | Get session with full message history |
-| `POST` | `/sessions` | Create session (optionally with initial message) |
-| `DELETE` | `/sessions/:id` | Delete session and all messages |
-| `POST` | `/chat/:sessionId` | Submit message and stream AI response (SSE) |
-| `POST` | `/chat/:sessionId/resume` | Resume session with pending user message (SSE) |
+| Method   | Path                      | Description                                      |
+| -------- | ------------------------- | ------------------------------------------------ |
+| `GET`    | `/sessions`               | List all sessions (newest first)                 |
+| `GET`    | `/sessions/:id`           | Get session with full message history            |
+| `POST`   | `/sessions`               | Create session (optionally with initial message) |
+| `DELETE` | `/sessions/:id`           | Delete session and all messages                  |
+| `POST`   | `/chat/:sessionId`        | Submit message and stream AI response (SSE)      |
+| `POST`   | `/chat/:sessionId/resume` | Resume session with pending user message (SSE)   |
 
 ---
 
@@ -122,4 +122,4 @@ bun run dev:server
 bun run dev
 ```
 
-Starts on `http://localhost:3000` with Bun's `--hot` flag. The `idleTimeout` is set to 255 seconds to accommodate long AI responses.
+Starts on `http://localhost:6969` with Bun's `--hot` flag. The `idleTimeout` is set to 255 seconds to accommodate long AI responses.

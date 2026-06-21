@@ -59,7 +59,7 @@ export type AppType = typeof routes;
 
 // If llm response keeps timing out, increase the idleTimeout value in the exported config below
 export default {
-  port: 3000,
+  port: 6969,
   fetch: app.fetch,
   idleTimeout: 255,
 };

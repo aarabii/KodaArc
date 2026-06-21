@@ -7,10 +7,10 @@
 ## Base URL
 
 ```
-http://localhost:3000
+http://localhost:6969
 ```
 
-The server runs on port 3000 by default. The CLI reads the `API_URL` environment variable (falling back to `http://localhost:3000`).
+The server runs on port 6969 by default. The CLI reads the `API_URL` environment variable (falling back to `http://localhost:6969`).
 
 ---
 
@@ -40,9 +40,9 @@ Retrieve a single session with its full message history.
 
 **Parameters:**
 
-| Param | Type | Description |
-| ----- | ---- | ----------- |
-| `id` | `string` (path) | Session CUID |
+| Param | Type            | Description  |
+| ----- | --------------- | ------------ |
+| `id`  | `string` (path) | Session CUID |
 
 **Response:** `200 OK`
 
@@ -98,15 +98,15 @@ Create a new session, optionally with an initial user message.
 }
 ```
 
-| Field | Type | Required | Description |
-| ----- | ---- | -------- | ----------- |
-| `title` | `string` | ✅ | Session title (typically first 100 chars of the prompt) |
-| `cwd` | `string` | ❌ | Working directory for file/tool operations |
-| `initialMessage` | `object` | ❌ | Create the session with an initial message already attached |
-| `initialMessage.role` | `"USER"` | ✅ (if `initialMessage`) | Must be `"USER"` |
-| `initialMessage.content` | `string` | ✅ (if `initialMessage`) | Message text |
-| `initialMessage.agentState` | `"PLAN" \| "BUILD"` | ✅ (if `initialMessage`) | Agent mode |
-| `initialMessage.model` | `string` | ✅ (if `initialMessage`) | Must be a registered model ID |
+| Field                       | Type                | Required                 | Description                                                 |
+| --------------------------- | ------------------- | ------------------------ | ----------------------------------------------------------- |
+| `title`                     | `string`            | ✅                       | Session title (typically first 100 chars of the prompt)     |
+| `cwd`                       | `string`            | ❌                       | Working directory for file/tool operations                  |
+| `initialMessage`            | `object`            | ❌                       | Create the session with an initial message already attached |
+| `initialMessage.role`       | `"USER"`            | ✅ (if `initialMessage`) | Must be `"USER"`                                            |
+| `initialMessage.content`    | `string`            | ✅ (if `initialMessage`) | Message text                                                |
+| `initialMessage.agentState` | `"PLAN" \| "BUILD"` | ✅ (if `initialMessage`) | Agent mode                                                  |
+| `initialMessage.model`      | `string`            | ✅ (if `initialMessage`) | Must be a registered model ID                               |
 
 **Response:** `201 Created`
 
@@ -146,8 +146,8 @@ Submit a new user message and stream the AI response.
 
 **Parameters:**
 
-| Param | Type | Description |
-| ----- | ---- | ----------- |
+| Param       | Type            | Description  |
+| ----------- | --------------- | ------------ |
 | `sessionId` | `string` (path) | Session CUID |
 
 **Request Body:**
@@ -160,15 +160,16 @@ Submit a new user message and stream the AI response.
 }
 ```
 
-| Field | Type | Required | Description |
-| ----- | ---- | -------- | ----------- |
-| `content` | `string` | ✅ | User message text |
-| `agentState` | `"PLAN" \| "BUILD"` | ✅ | Agent mode for this request |
-| `model` | `string` | ✅ | Must be a registered model ID |
+| Field        | Type                | Required | Description                   |
+| ------------ | ------------------- | -------- | ----------------------------- |
+| `content`    | `string`            | ✅       | User message text             |
+| `agentState` | `"PLAN" \| "BUILD"` | ✅       | Agent mode for this request   |
+| `model`      | `string`            | ✅       | Must be a registered model ID |
 
 **Response:** `200 OK` — Server-Sent Events stream (see [SSE Events](#sse-event-format) below)
 
 **Errors:**
+
 - `400` — Invalid request body (Zod validation failure)
 - `404` — Session not found
 
@@ -180,13 +181,14 @@ Resume a session whose last message is from the user (no assistant reply yet). U
 
 **Parameters:**
 
-| Param | Type | Description |
-| ----- | ---- | ----------- |
+| Param       | Type            | Description  |
+| ----------- | --------------- | ------------ |
 | `sessionId` | `string` (path) | Session CUID |
 
 **Response:** `200 OK` — Server-Sent Events stream
 
 **Errors:**
+
 - `404` — Session not found
 - `409` — No pending user message to resume / Unsupported model / Session already has an active resume
 
@@ -283,8 +285,14 @@ Message parts stored in the database `parts` JSON column follow this discriminat
 ```ts
 type MessagePart =
   | { type: "reasoning"; text: string }
-  | { type: "tool_call"; id: string; name: string; args: Record<string, unknown>; result?: string }
-  | { type: "text"; text: string }
+  | {
+      type: "tool_call";
+      id: string;
+      name: string;
+      args: Record<string, unknown>;
+      result?: string;
+    }
+  | { type: "text"; text: string };
 ```
 
 ---
@@ -316,15 +324,15 @@ For unhandled errors (500):
 
 Tools are exposed to the AI model based on the agent state and whether a `cwd` is set on the session. All paths in tool arguments are relative to the session's working directory.
 
-| Tool | Description | Input Schema | PLAN | BUILD |
-| ---- | ----------- | ------------ | ---- | ----- |
-| `readFile` | Read file contents (max 10K chars, truncated) | `{ path: string }` | ✅ | ✅ |
-| `listDirectory` | List directory entries (skips hidden + node_modules) | `{ path?: string }` | ✅ | ✅ |
-| `glob` | Find files by pattern (max 200 results) | `{ pattern: string, path?: string }` | ✅ | ✅ |
-| `grep` | Regex search in files (max 50 matches) | `{ pattern: string, path?: string, include?: string }` | ✅ | ✅ |
-| `gitHelper` | Git operations (status, diff, log, show, commit, branch) | `{ subcommand, message?, staged?, filePath?, count?, ref?, name?, create? }` | ✅ (read-only) | ✅ |
-| `writeFile` | Create/overwrite files (creates parent dirs) | `{ path: string, content: string }` | ❌ | ✅ |
-| `editFile` | Surgical string replacement (unique match required) | `{ path: string, oldString: string, newString: string }` | ❌ | ✅ |
-| `bash` | Execute shell commands (max 20K output, 30s timeout) | `{ command: string, timeout?: number }` | ❌ | ✅ |
+| Tool            | Description                                              | Input Schema                                                                 | PLAN           | BUILD |
+| --------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------- | -------------- | ----- |
+| `readFile`      | Read file contents (max 10K chars, truncated)            | `{ path: string }`                                                           | ✅             | ✅    |
+| `listDirectory` | List directory entries (skips hidden + node_modules)     | `{ path?: string }`                                                          | ✅             | ✅    |
+| `glob`          | Find files by pattern (max 200 results)                  | `{ pattern: string, path?: string }`                                         | ✅             | ✅    |
+| `grep`          | Regex search in files (max 50 matches)                   | `{ pattern: string, path?: string, include?: string }`                       | ✅             | ✅    |
+| `gitHelper`     | Git operations (status, diff, log, show, commit, branch) | `{ subcommand, message?, staged?, filePath?, count?, ref?, name?, create? }` | ✅ (read-only) | ✅    |
+| `writeFile`     | Create/overwrite files (creates parent dirs)             | `{ path: string, content: string }`                                          | ❌             | ✅    |
+| `editFile`      | Surgical string replacement (unique match required)      | `{ path: string, oldString: string, newString: string }`                     | ❌             | ✅    |
+| `bash`          | Execute shell commands (max 20K output, 30s timeout)     | `{ command: string, timeout?: number }`                                      | ❌             | ✅    |
 
 All tools enforce **path sandboxing**: resolved paths must start with the session's `cwd`. Any attempt to escape via `../` traversal returns an error.

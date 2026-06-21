@@ -57,11 +57,11 @@ packages/
 
 ### Prerequisites
 
-| Tool       | Version  | Purpose              |
-| ---------- | -------- | -------------------- |
-| [Bun](https://bun.sh) | ≥ 1.1    | Runtime & package manager |
-| [PostgreSQL](https://www.postgresql.org/) | ≥ 15     | Session & message storage |
-| Node.js    | ≥ 18     | Peer dependency for some tools |
+| Tool                                      | Version | Purpose                        |
+| ----------------------------------------- | ------- | ------------------------------ |
+| [Bun](https://bun.sh)                     | ≥ 1.1   | Runtime & package manager      |
+| [PostgreSQL](https://www.postgresql.org/) | ≥ 15    | Session & message storage      |
+| Node.js                                   | ≥ 18    | Peer dependency for some tools |
 
 ### 1. Clone & Install
 
@@ -80,18 +80,18 @@ cp .env.example .env
 Edit `.env` with your actual values:
 
 ```env
-API_URL=http://localhost:3000
+API_URL=http://localhost:6969
 DATABASE_URL=postgresql://user:password@localhost:5432/kodaarc
 ```
 
 You will also need API keys for at least one provider set as environment variables:
 
-| Variable              | Provider   |
-| --------------------- | ---------- |
-| `ANTHROPIC_API_KEY`   | Anthropic  |
-| `OPENAI_API_KEY`      | OpenAI     |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | Google |
-| `SENTRY_DNS`          | Sentry (optional) |
+| Variable                       | Provider          |
+| ------------------------------ | ----------------- |
+| `ANTHROPIC_API_KEY`            | Anthropic         |
+| `OPENAI_API_KEY`               | OpenAI            |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Google            |
+| `SENTRY_DNS`                   | Sentry (optional) |
 
 ### 3. Set Up the Database
 
@@ -130,7 +130,7 @@ bun run dev:cli
 | `gemini-3.5-flash`              | Google    | $1.50      | $9.00       |
 | `gemini-3.1-flash-lite`         | Google    | $0.25      | $1.50       |
 | `gemini-3.1-flash-live-preview` | Google    | $0.75      | $4.50       |
-| `gemini-2.5-flash` *(default)*  | Google    | Free       | Free        |
+| `gemini-2.5-flash` _(default)_  | Google    | Free       | Free        |
 
 > **Details:** [AI Models & Provider Configuration →](./DOCS/ai-models-and-providers.md)
 
@@ -138,22 +138,22 @@ bun run dev:cli
 
 ## Documentation Index
 
-| Document | Description |
-| -------- | ----------- |
-| [Architecture](./DOCS/architecture.md) | System architecture, data flow diagrams, package dependency graph |
-| [Setup & Deployment](./DOCS/setup-and-deployment.md) | Environment setup, database config, running locally, production notes |
-| [AI Models & Providers](./DOCS/ai-models-and-providers.md) | Supported models, provider options, extended thinking configuration |
-| [API Reference](./DOCS/api-reference.md) | All HTTP endpoints, request/response schemas, SSE event formats |
-| [AI Agent Context](./AGENT/system-rules.md) | Coding standards and guardrails for AI agents working on this codebase |
+| Document                                                   | Description                                                            |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------- |
+| [Architecture](./DOCS/architecture.md)                     | System architecture, data flow diagrams, package dependency graph      |
+| [Setup & Deployment](./DOCS/setup-and-deployment.md)       | Environment setup, database config, running locally, production notes  |
+| [AI Models & Providers](./DOCS/ai-models-and-providers.md) | Supported models, provider options, extended thinking configuration    |
+| [API Reference](./DOCS/api-reference.md)                   | All HTTP endpoints, request/response schemas, SSE event formats        |
+| [AI Agent Context](./AGENT/system-rules.md)                | Coding standards and guardrails for AI agents working on this codebase |
 
 ### Package Documentation
 
-| Package | README |
-| ------- | ------ |
-| `@koda-arc/cli` | [packages/cli/README.md](./packages/cli/README.md) |
-| `@koda-arc/server` | [packages/server/README.md](./packages/server/README.md) |
+| Package              | README                                                       |
+| -------------------- | ------------------------------------------------------------ |
+| `@koda-arc/cli`      | [packages/cli/README.md](./packages/cli/README.md)           |
+| `@koda-arc/server`   | [packages/server/README.md](./packages/server/README.md)     |
 | `@koda-arc/database` | [packages/database/README.md](./packages/database/README.md) |
-| `@koda-arc/shared` | [packages/shared/README.md](./packages/shared/README.md) |
+| `@koda-arc/shared`   | [packages/shared/README.md](./packages/shared/README.md)     |
 
 ---
 

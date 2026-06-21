@@ -6,13 +6,13 @@
 
 ## Prerequisites
 
-| Requirement | Minimum Version | Notes |
-| ----------- | --------------- | ----- |
-| **Bun** | 1.1+ | Runtime, package manager, and dev server. Install via `curl -fsSL https://bun.sh/install \| bash` |
-| **PostgreSQL** | 15+ | Used for session and message persistence. A hosted option like [Neon](https://neon.tech) or [Supabase](https://supabase.com) works perfectly. |
-| **Node.js** | 18+ | Peer dependency for TypeScript and some tooling |
-| **Git** | 2.30+ | Required by the `gitHelper` tool at runtime |
-| **grep** (system) | Any | Required by the `grep` tool. Pre-installed on macOS/Linux; on Windows, use WSL or Git Bash |
+| Requirement       | Minimum Version | Notes                                                                                                                                         |
+| ----------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Bun**           | 1.1+            | Runtime, package manager, and dev server. Install via `curl -fsSL https://bun.sh/install \| bash`                                             |
+| **PostgreSQL**    | 15+             | Used for session and message persistence. A hosted option like [Neon](https://neon.tech) or [Supabase](https://supabase.com) works perfectly. |
+| **Node.js**       | 18+             | Peer dependency for TypeScript and some tooling                                                                                               |
+| **Git**           | 2.30+           | Required by the `gitHelper` tool at runtime                                                                                                   |
+| **grep** (system) | Any             | Required by the `grep` tool. Pre-installed on macOS/Linux; on Windows, use WSL or Git Bash                                                    |
 
 ---
 
@@ -45,25 +45,25 @@ cp .env.example .env
 
 ### Required Variables
 
-| Variable | Description | Example |
-| -------- | ----------- | ------- |
-| `API_URL` | URL the CLI uses to reach the server | `http://localhost:3000` |
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@localhost:5432/kodaarc` |
+| Variable       | Description                          | Example                                         |
+| -------------- | ------------------------------------ | ----------------------------------------------- |
+| `API_URL`      | URL the CLI uses to reach the server | `http://localhost:6969`                         |
+| `DATABASE_URL` | PostgreSQL connection string         | `postgresql://user:pass@localhost:5432/kodaarc` |
 
 ### AI Provider API Keys
 
 You need at least one provider key. Set them as environment variables (they are read by the Vercel AI SDK automatically):
 
-| Variable | Provider | Required For |
-| -------- | -------- | ------------ |
-| `ANTHROPIC_API_KEY` | Anthropic | Claude Sonnet 4-6, Claude Haiku 4-5, Claude Opus 4-6 |
-| `OPENAI_API_KEY` | OpenAI | GPT-5.4, GPT-5.4-mini, GPT-5.4-nano |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | Google | Gemini 3.5 Flash, Gemini 3.1 Flash Lite, Gemini 2.5 Flash |
+| Variable                       | Provider  | Required For                                              |
+| ------------------------------ | --------- | --------------------------------------------------------- |
+| `ANTHROPIC_API_KEY`            | Anthropic | Claude Sonnet 4-6, Claude Haiku 4-5, Claude Opus 4-6      |
+| `OPENAI_API_KEY`               | OpenAI    | GPT-5.4, GPT-5.4-mini, GPT-5.4-nano                       |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Google    | Gemini 3.5 Flash, Gemini 3.1 Flash Lite, Gemini 2.5 Flash |
 
 ### Optional Variables
 
-| Variable | Description | Default |
-| -------- | ----------- | ------- |
+| Variable     | Description                                          | Default                |
+| ------------ | ---------------------------------------------------- | ---------------------- |
 | `SENTRY_DNS` | Sentry DSN for error tracking and structured logging | None (Sentry disabled) |
 
 ---
@@ -128,7 +128,7 @@ KodaArc requires **two processes** running simultaneously:
 bun run dev:server
 ```
 
-This starts the Hono server on `http://localhost:3000` with Bun's `--hot` flag for automatic reloading. The server binds to port 3000 with an `idleTimeout` of 255 seconds (to accommodate long-running AI responses).
+This starts the Hono server on `http://localhost:6969` with Bun's `--hot` flag for automatic reloading. The server binds to port 6969 with an `idleTimeout` of 255 seconds (to accommodate long-running AI responses).
 
 ### Start the CLI
 
@@ -156,17 +156,17 @@ cd packages/cli && bun run dev
 
 All packages extend this base configuration:
 
-| Setting | Value | Rationale |
-| ------- | ----- | --------- |
-| `target` | `ESNext` | Bun supports the latest ES features |
-| `module` | `Preserve` | Bundler mode — no module transformation |
-| `moduleResolution` | `bundler` | Enables `.ts` extension imports |
-| `strict` | `true` | Full TypeScript strict mode |
-| `noFallthroughCasesInSwitch` | `true` | Prevents missing `break` in switch cases |
-| `noUncheckedIndexedAccess` | `true` | Array/object index access returns `T \| undefined` |
-| `noImplicitOverride` | `true` | Requires `override` keyword on method overrides |
-| `verbatimModuleSyntax` | `true` | Enforces `import type` for type-only imports |
-| `noEmit` | `true` | Bun runs `.ts` directly; no compilation step |
+| Setting                      | Value      | Rationale                                          |
+| ---------------------------- | ---------- | -------------------------------------------------- |
+| `target`                     | `ESNext`   | Bun supports the latest ES features                |
+| `module`                     | `Preserve` | Bundler mode — no module transformation            |
+| `moduleResolution`           | `bundler`  | Enables `.ts` extension imports                    |
+| `strict`                     | `true`     | Full TypeScript strict mode                        |
+| `noFallthroughCasesInSwitch` | `true`     | Prevents missing `break` in switch cases           |
+| `noUncheckedIndexedAccess`   | `true`     | Array/object index access returns `T \| undefined` |
+| `noImplicitOverride`         | `true`     | Requires `override` keyword on method overrides    |
+| `verbatimModuleSyntax`       | `true`     | Enforces `import type` for type-only imports       |
+| `noEmit`                     | `true`     | Bun runs `.ts` directly; no compilation step       |
 
 ### `prisma.config.ts`
 
@@ -203,7 +203,7 @@ If the AI model takes a long time to respond (especially with extended thinking 
 
 ```ts
 export default {
-  port: 3000,
+  port: 6969,
   fetch: app.fetch,
   idleTimeout: 255, // Increase this value (in seconds)
 };
