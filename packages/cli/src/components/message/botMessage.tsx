@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { EmptyBorder, Spinner, Icon, type IconName } from "../common";
 import { useTheme } from "../../hooks";
 import type { ClientMessagePart, ClientToolCallPart } from "../../hooks/types";
 import { AgentState } from "@koda-arc/database/enums";
 
 
-import { TextAttributes } from "@opentui/core";
+import { TextAttributes, SyntaxStyle, RGBA } from "@opentui/core";
 
 type Props = {
   parts: ClientMessagePart[];
@@ -97,59 +97,35 @@ function groupConsecutiveParts(parts: ClientMessagePart[]): PartGroup[] {
   return groups;
 }
 
-function renderFormattedText(text: string, colors: any, dimNormalText = false) {
-  const TOKEN_REGEX = /(\*\*.*?\*\*|__.*?__|`.*?`|"[^"]+?"|\*.*?\*|_.*?_)/g;
-  const tokens = text.split(TOKEN_REGEX);
+function getMarkdownSyntaxStyle(colors: any) {
+  const style = SyntaxStyle.create();
 
-  return tokens.map((token, index) => {
-    if (token.startsWith("**") && token.endsWith("**")) {
-      return (
-        <span key={index} attributes={TextAttributes.BOLD}>
-          {token.slice(2, -2)}
-        </span>
-      );
-    }
-    if (token.startsWith("__") && token.endsWith("__")) {
-      return (
-        <span key={index} attributes={TextAttributes.BOLD}>
-          {token.slice(2, -2)}
-        </span>
-      );
-    }
-    if (token.startsWith("*") && token.endsWith("*")) {
-      return (
-        <span key={index} attributes={TextAttributes.ITALIC | (dimNormalText ? TextAttributes.DIM : 0)}>
-          {token.slice(1, -1)}
-        </span>
-      );
-    }
-    if (token.startsWith("_") && token.endsWith("_")) {
-      return (
-        <span key={index} attributes={TextAttributes.ITALIC | (dimNormalText ? TextAttributes.DIM : 0)}>
-          {token.slice(1, -1)}
-        </span>
-      );
-    }
-    if (token.startsWith("`") && token.endsWith("`")) {
-      return (
-        <span key={index} fg={colors.agent.build}>
-          {token.slice(1, -1)}
-        </span>
-      );
-    }
-    if (token.startsWith('"') && token.endsWith('"')) {
-      return (
-        <span key={index} fg={colors.brand.primary} attributes={TextAttributes.BOLD}>
-          {token}
-        </span>
-      );
-    }
-    return (
-      <span key={index} attributes={dimNormalText ? TextAttributes.DIM : 0}>
-        {token}
-      </span>
-    );
+  // Register inline formatting styles
+  style.registerStyle("markup.strong", { bold: true });
+  style.registerStyle("markup.italic", { italic: true });
+  style.registerStyle("markup.strikethrough", { dim: true });
+  style.registerStyle("markup.raw", { fg: RGBA.fromHex(colors.agent.build) });
+
+  style.registerStyle("markup.link.label", {
+    fg: RGBA.fromHex(colors.brand.primary),
+    bold: true,
   });
+  style.registerStyle("markup.link.url", {
+    fg: RGBA.fromHex(colors.text.secondary),
+    dim: true,
+  });
+  style.registerStyle("markup.heading", {
+    fg: RGBA.fromHex(colors.brand.secondary),
+    bold: true,
+  });
+
+  // Code highlights
+  style.registerStyle("string", { fg: RGBA.fromHex(colors.brand.primary) });
+  style.registerStyle("comment", { fg: RGBA.fromHex(colors.text.muted), italic: true });
+  style.registerStyle("keyword", { fg: RGBA.fromHex(colors.brand.secondary), bold: true });
+  style.registerStyle("number", { fg: RGBA.fromHex(colors.agent.plan) });
+
+  return style;
 }
 
 export function BotMessage({
@@ -162,6 +138,7 @@ export function BotMessage({
 }: Props) {
   const { colors } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
+  const syntaxStyle = useMemo(() => getMarkdownSyntaxStyle(colors), [colors]);
   return (
     <box width="100%" alignItems="center">
       {groupConsecutiveParts(parts).map((group) => (
@@ -212,7 +189,9 @@ export function BotMessage({
                     width="100%"
                     paddingX={2}
                   >
-                    <text>{renderFormattedText(part.text, colors, true)}</text>
+                    <text attributes={TextAttributes.DIM}>
+                      <markdown content={part.text} syntaxStyle={syntaxStyle} streaming={streaming} />
+                    </text>
                   </box>
 
                   <box paddingLeft={2}>
@@ -262,7 +241,7 @@ export function BotMessage({
             if (part.type === "text") {
               return (
                 <box key={`text-${j}`} paddingX={3} width="100%">
-                  <text>{renderFormattedText(part.text, colors, false)}</text>
+                  <markdown content={part.text} syntaxStyle={syntaxStyle} streaming={streaming} />
                 </box>
               );
             }
