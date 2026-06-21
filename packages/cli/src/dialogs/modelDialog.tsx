@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useDialog, useTheme } from "../hooks";
-import { SearchList } from "../components";
+import { SearchList, Icon } from "../components";
 import type { SupportedChatModelId } from "@koda-arc/shared";
 
 type ModelDialogContextProps = {
@@ -28,9 +28,15 @@ export const ModelDialogContent = ({
       onSelect={handleSelect}
       filterFn={(modelId, q) => modelId.toLowerCase().includes(q.toLowerCase())}
       renderItem={(modelId, isSelected) => (
-        <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
-          {modelId}
-        </text>
+        <box flexDirection="row" gap={1} alignItems="center">
+          <Icon
+            name="Sparkles"
+            fg={isSelected ? colors.selection.text : colors.brand.primary}
+          />
+          <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
+            {modelId}
+          </text>
+        </box>
       )}
       getKey={(modelId) => modelId}
       placeholder="Search of different models"

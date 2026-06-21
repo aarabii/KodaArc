@@ -43,6 +43,7 @@ export const COMMANDS: CommandType[] = [
     name: "new",
     desc: "Clear context and start a fresh conversation",
     value: "/new",
+    icon: "Sparkles",
     action: (ctx) => {
       ctx.nav("/");
     },
@@ -51,6 +52,7 @@ export const COMMANDS: CommandType[] = [
     name: "help",
     desc: "Get help and view frequently asked questions",
     value: "/help",
+    icon: "BookOpen",
     action: (ctx) => {
       ctx.dialog.open({
         title: "Help & FAQs",
@@ -62,6 +64,7 @@ export const COMMANDS: CommandType[] = [
     name: "agents",
     desc: "Switch to a different KodaArc agent",
     value: "/agent",
+    icon: "Compass",
     action: (ctx) => {
       ctx.dialog.open({
         title: "Select Agent",
@@ -78,6 +81,7 @@ export const COMMANDS: CommandType[] = [
     name: "models",
     desc: "Choose the LLM powering your session",
     value: "/models",
+    icon: "Cpu",
     action: (ctx) => {
       ctx.dialog.open({
         title: "Select Model",
@@ -94,6 +98,7 @@ export const COMMANDS: CommandType[] = [
     name: "sessions",
     desc: "View and restore past conversations",
     value: "/sessions",
+    icon: "FolderOpen",
     action: (ctx) => {
       ctx.dialog.open({
         title: "Past Sessions",
@@ -105,6 +110,7 @@ export const COMMANDS: CommandType[] = [
     name: "theme",
     desc: "Customize the editor color theme",
     value: "/theme",
+    icon: "Paintbrush",
     action: (ctx) => {
       ctx.dialog.open({
         title: "Select Theme",
@@ -116,6 +122,7 @@ export const COMMANDS: CommandType[] = [
     name: "spinner",
     desc: "Choose your preferred loading spinner",
     value: "/spinner",
+    icon: "Loader2",
     action: (ctx) => {
       ctx.dialog.open({
         title: "Select Spinner",
@@ -127,6 +134,7 @@ export const COMMANDS: CommandType[] = [
     name: "login",
     desc: "Authenticate your account via browser",
     value: "/login",
+    icon: "Fingerprint",
     action: (ctx) => {
       ctx.toast.show({
         variant: "info",
@@ -138,6 +146,7 @@ export const COMMANDS: CommandType[] = [
     name: "logout",
     desc: "Sign out of your KodaArc account",
     value: "/logout",
+    icon: "LogOut",
     action: (ctx) => {
       ctx.dialog.open({
         title: "Sign Out",
@@ -158,6 +167,7 @@ export const COMMANDS: CommandType[] = [
     name: "upgrade",
     desc: "Purchase credits or upgrade your plan",
     value: "/upgrade",
+    icon: "Coins",
     action: (ctx) => {
       ctx.toast.show({
         variant: "info",
@@ -169,6 +179,7 @@ export const COMMANDS: CommandType[] = [
     name: "usage",
     desc: "Open billing and usage portal in browser",
     value: "/usage",
+    icon: "Activity",
     action: (ctx) => {
       ctx.toast.show({
         variant: "info",
@@ -180,6 +191,7 @@ export const COMMANDS: CommandType[] = [
     name: "exit",
     desc: "Quit KodaArc",
     value: "/exit",
+    icon: "Power",
     action: (ctx) => {
       ctx.dialog.open({
         title: "Quit KodaArc",

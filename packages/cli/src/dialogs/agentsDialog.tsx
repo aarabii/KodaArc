@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useDialog, useTheme } from "../hooks";
-import { SearchList } from "../components";
+import { SearchList, Icon } from "../components";
 import { AgentState } from "@koda-arc/database/enums";
 
 const AVAILABLE_AGENT_STATES: AgentState[] = [AgentState.BUILD, AgentState.PLAN];
@@ -36,10 +36,15 @@ export const AgentDialogContent = ({
         getAgentStateLabel(item).toLowerCase().includes(q.toLowerCase())
       }
       renderItem={(item, isSelected) => (
-        <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
-          {item === currentAgentState ? "" : ""}
-          {getAgentStateLabel(item)}
-        </text>
+        <box flexDirection="row" gap={1} alignItems="center">
+          <Icon
+            name={item === AgentState.PLAN ? "Compass" : "Hammer"}
+            fg={isSelected ? colors.selection.text : colors.brand.primary}
+          />
+          <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
+            {getAgentStateLabel(item)}
+          </text>
+        </box>
       )}
       getKey={(item) => item}
       placeholder="Search of different agents"

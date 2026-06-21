@@ -4,7 +4,7 @@ import { format, isToday, isYesterday, isThisWeek } from "date-fns";
 import { useNavigate } from "react-router";
 import { useDialog, useToast, useTheme } from "../hooks";
 import { apiClient, getErrorMessage } from "../lib";
-import { SearchList } from "../components";
+import { SearchList, Icon } from "../components";
 import type { InferResponseType } from "hono/client";
 
 type Session = InferResponseType<
@@ -121,7 +121,11 @@ export const SessionDialog = () => {
       onDelete={handleDelete}
       filterFn={(s, q) => s.title.toLowerCase().includes(q.toLowerCase())}
       renderItem={(session, isSelected) => (
-        <>
+        <box flexDirection="row" gap={1} alignItems="center" width="100%">
+          <Icon
+            name="FolderOpen"
+            fg={isSelected ? colors.selection.text : colors.brand.primary}
+          />
           <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
             {session.title}
           </text>
@@ -147,7 +151,7 @@ export const SessionDialog = () => {
           >
             {formatSessionDate(session.createdAt)}
           </text>
-        </>
+        </box>
       )}
       getKey={(s) => s.id}
       placeholder="Search session"

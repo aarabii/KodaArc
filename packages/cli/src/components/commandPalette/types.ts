@@ -5,6 +5,8 @@ import type {
   ToastContextValue,
 } from "../../providers/types";
 
+import type { IconName } from "../common/icon";
+
 export type CommandContext = {
   exit: () => void;
   toast: ToastContextValue;
@@ -19,5 +21,7 @@ export type CommandType = {
   name: string;
   desc: string;
   value: string;
+  icon: IconName;
   action?: (ctx: CommandContext) => void | Promise<void>;
 };
+

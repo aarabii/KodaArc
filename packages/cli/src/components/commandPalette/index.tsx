@@ -51,6 +51,7 @@ export function CommandMenu({
             backgroundColor={isSelected ? colors.selection.bg : undefined}
             onMouseMove={() => onSelect(i)}
             onMouseDown={() => onExecute(i)}
+            alignItems="center"
           >
             <box width={COMMAND_COL_WIDTH} flexShrink={0}>
               <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>

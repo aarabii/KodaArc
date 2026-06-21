@@ -1,5 +1,5 @@
 import { AgentState } from "@koda-arc/database/enums";
-import { EmptyBorder } from "../common";
+import { EmptyBorder, Icon } from "../common";
 import { useTheme } from "../../hooks";
 
 type Props = {
@@ -27,12 +27,15 @@ export function UserMessage({ message, agentState }: Props) {
         }}
       >
         <box
-          justifyContent="center"
+          flexDirection="row"
+          gap={1}
+          alignItems="center"
           paddingX={2}
           paddingY={1}
           backgroundColor={colors.brand.secondary}
           width="100%"
         >
+          <Icon name="User" fg={colors.text.inverse || colors.bg.base} />
           <text>{message}</text>
         </box>
       </box>

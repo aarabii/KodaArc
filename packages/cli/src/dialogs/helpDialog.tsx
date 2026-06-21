@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TextAttributes } from "@opentui/core";
 import { useTheme } from "../hooks";
-import { SearchList } from "../components/common";
+import { SearchList, Icon } from "../components";
 import { FAQ_ITEMS, type FaqItem } from "./faqData";
 
 export function HelpDialogContent() {
@@ -20,13 +20,18 @@ export function HelpDialogContent() {
             faq.answer.toLowerCase().includes(q.toLowerCase())
           }
           renderItem={(faq, isSelected) => (
-            <text
-              selectable={false}
-              fg={isSelected ? colors.selection.text : colors.text.primary}
-            >
-              {isSelected ? "› " : "  "}
-              {faq.question}
-            </text>
+            <box flexDirection="row" gap={1} alignItems="center">
+              <Icon
+                name="BookOpen"
+                fg={isSelected ? colors.selection.text : colors.brand.primary}
+              />
+              <text
+                selectable={false}
+                fg={isSelected ? colors.selection.text : colors.text.primary}
+              >
+                {faq.question}
+              </text>
+            </box>
           )}
           onSelect={(faq) => setActiveFaq(faq)}
           onHighlight={(faq) => setActiveFaq(faq)}

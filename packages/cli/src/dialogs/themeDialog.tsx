@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
+import { TextAttributes } from "@opentui/core";
 import { useDialog, useTheme } from "../hooks";
-import { SearchList } from "../components";
+import { SearchList, Icon } from "../components";
 import { THEME } from "../themes";
 import type { ThemeProps } from "../themes";
 
@@ -40,14 +41,27 @@ export const ThemeDialogContent = () => {
       onSelect={handleSelect}
       onHighlight={handleHighlight}
       filterFn={(t, q) => t.name.toLowerCase().includes(q.toLowerCase())}
-      renderItem={(theme, isSelected) => (
-        <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
-          {theme.name === originalThemeRef.current.name
-            ? "\u0020\u2022\u0020"
-            : "\u0020\u0020\u0020"}
-          {theme.name}
-        </text>
-      )}
+      renderItem={(theme, isSelected) => {
+        const isActive = theme.name === originalThemeRef.current.name;
+        return (
+          <box flexDirection="row" gap={1} alignItems="center">
+            <Icon
+              name="Paintbrush"
+              fg={
+                isActive
+                  ? colors.brand.primary
+                  : isSelected
+                    ? colors.selection.text
+                    : colors.text.muted
+              }
+              attributes={isActive ? 0 : TextAttributes.DIM}
+            />
+            <text selectable={false} fg={isSelected ? colors.selection.text : colors.text.primary}>
+              {theme.name}
+            </text>
+          </box>
+        );
+      }}
       getKey={(t) => t.name}
       placeholder="Search for the different color theme"
       emptyText="No matching theme found."

@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { EmptyBorder, Spinner } from "../common";
+import { EmptyBorder, Spinner, Icon, type IconName } from "../common";
 import { useTheme } from "../../hooks";
 import type { ClientMessagePart, ClientToolCallPart } from "../../hooks/types";
 import { AgentState } from "@koda-arc/database/enums";
+
+
 import { TextAttributes } from "@opentui/core";
 
 type Props = {
@@ -23,6 +25,50 @@ function formatToolName(name: string): string {
 function formatToolArgs(tc: ClientToolCallPart): string {
   return Object.values(tc.args).map(String).join(" ");
 }
+
+function getToolIconName(name: string): IconName {
+  const lower = name.toLowerCase();
+  if (lower.includes("read") || lower.includes("view")) {
+    return "FileText";
+  }
+  if (
+    lower.includes("write") ||
+    lower.includes("replace") ||
+    lower.includes("edit") ||
+    lower.includes("patch")
+  ) {
+    return "PenTool";
+  }
+  if (
+    lower.includes("command") ||
+    lower.includes("execute") ||
+    lower.includes("run")
+  ) {
+    return "Terminal";
+  }
+  if (lower.includes("list") || lower.includes("dir")) {
+    return "Folder";
+  }
+  if (
+    lower.includes("search") ||
+    lower.includes("grep") ||
+    lower.includes("find")
+  ) {
+    return "Search";
+  }
+  if (lower.includes("agent") || lower.includes("invoke")) {
+    return "Users";
+  }
+  if (
+    lower.includes("ask") ||
+    lower.includes("question") ||
+    lower.includes("permission")
+  ) {
+    return "HelpCircle";
+  }
+  return "Wrench";
+}
+
 
 type PartGroup = {
   type: ClientMessagePart["type"];
@@ -130,7 +176,7 @@ export function BotMessage({
                     {isRunning ? (
                       <Spinner agentState={agentState} />
                     ) : (
-                      <text fg={colors.agent.thinking}>✔</text>
+                      <Icon name="Sparkles" fg={colors.agent.thinking} />
                     )}
                     <text
                       fg={colors.agent.thinking}
@@ -149,7 +195,7 @@ export function BotMessage({
                     {isRunning ? (
                       <Spinner agentState={agentState} />
                     ) : (
-                      <text fg={colors.agent.thinking}>✔</text>
+                      <Icon name="Sparkles" fg={colors.agent.thinking} />
                     )}
                     <text fg={colors.agent.thinking} attributes={TextAttributes.BOLD}>
                       Thinking:
@@ -194,7 +240,14 @@ export function BotMessage({
                   }}
                   width="100%"
                   paddingX={2}
+                  flexDirection="row"
+                  gap={1}
+                  alignItems="center"
                 >
+                  <Icon
+                    name={getToolIconName(part.name)}
+                    fg={colors.agent.build}
+                  />
                   <text attributes={TextAttributes.DIM}>
                     <em fg={colors.agent.build}>
                       {formatToolName(part.name)}:
@@ -220,21 +273,16 @@ export function BotMessage({
       ))}
 
       <box paddingX={3} paddingBottom={1} gap={1} width="100%">
-        <box flexDirection="row" gap={2}>
-          <text
-            attributes={interrupted ? TextAttributes.DIM : 0}
-            fg={
-              interrupted
-                ? undefined
-                : agentState === AgentState.PLAN
-                  ? colors.agent.plan
-                  : colors.brand.primary
-            }
-          >
-            ◉
-          </text>
+        <box flexDirection="row" gap={2} alignItems="center">
+          {interrupted ? (
+            <Icon name="AlertTriangle" fg={colors.toast.error.accent} />
+          ) : agentState === AgentState.PLAN ? (
+            <Icon name="Compass" fg={colors.agent.plan} />
+          ) : (
+            <Icon name="Hammer" fg={colors.agent.build} />
+          )}
 
-          <box flexDirection="row" gap={1}>
+          <box flexDirection="row" gap={1} alignItems="center">
             <text attributes={interrupted ? TextAttributes.DIM : 0}>
               {agentState === AgentState.PLAN ? "Plan" : "Build"}
             </text>
